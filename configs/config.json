@@ -1,0 +1,4 @@
+{
+  "defaultTargetPath": ".",
+  "dependencyOrders": ["external", "adapter", "application", "domain"]
+}
