@@ -9,8 +9,9 @@ import (
 )
 
 const (
-	red   = "\033[1;31m%s\033[0m"
-	green = "\033[1;32m%s\033[0m"
+	red    = "\033[1;31m%s\033[0m"
+	yellow = "\033[1;33m%s\033[0m"
+	green  = "\033[1;32m%s\033[0m"
 )
 
 type dependency struct {
@@ -25,9 +26,13 @@ func Check(cfg Config) {
 			fmt.Println(err)
 			return nil
 		}
-		if info.IsDir() && include(cfg.IgnoreDirs, path) {
-			fmt.Println("Ignored:", path)
-			return filepath.SkipDir
+		if include(cfg.Ignore, path) { // todo
+			if info.IsDir() {
+				print(yellow, "[Ignored] "+path)
+				return filepath.SkipDir
+			}
+			print(yellow, "[Ignored] "+path)
+			return nil
 		}
 		if info.IsDir() || !strings.Contains(info.Name(), ".go") {
 			return nil
@@ -43,10 +48,11 @@ func Check(cfg Config) {
 func checkDependency(dependencies []string, path string) {
 	currentLayer := search(dependencies, path)
 	importLayers := retrieveLayers(dependencies, path)
-	fmt.Println("currentLayer: ", currentLayer) // debug
-	fmt.Println("importLayers: ", importLayers) // debug
+	// fmt.Println("currentLayer: ", currentLayer) // debug
+	// fmt.Println("importLayers: ", importLayers) // debug
 
 	if len(importLayers) == 0 {
+		print(green, "[None] "+path)
 		return
 	}
 	redDeps := make([]dependency, 0, len(importLayers))
@@ -59,21 +65,18 @@ func checkDependency(dependencies []string, path string) {
 	}
 	if len(redDeps) > 0 {
 		for _, d := range redDeps {
-			fmt.Printf(red, path+" imports "+d.path)
-			fmt.Println()
-			fmt.Printf(red, dependencies[currentLayer]+" depends on "+dependencies[d.index])
-			fmt.Println()
+			print(red, "[Error] "+path+" imports "+d.path)
+			print(red, "[Error] \""+dependencies[currentLayer]+"\" depends on \""+dependencies[d.index]+"\"")
 		}
 	} else {
-		fmt.Printf(green, path)
-		fmt.Println()
+		print(green, "[Verified] "+path)
 	}
 }
 
 func retrieveLayers(dependencies []string, path string) []dependency {
 	filepath, _ := filepath.Abs(path)
 	imports := readImports(filepath)
-	fmt.Println("imports: ", imports) // debug
+	// fmt.Println("imports: ", imports) // debug
 	layers := make([]dependency, 0, len(imports))
 
 	for _, v := range imports {
@@ -89,7 +92,7 @@ func retrieveLayers(dependencies []string, path string) []dependency {
 }
 
 func readImports(filepath string) []string {
-	fmt.Println("filepath: ", filepath) // debug
+	// fmt.Println("filepath: ", filepath) // debug
 	f, _ := os.Open(filepath)
 	defer f.Close()
 	scanner := bufio.NewScanner(f)
@@ -133,9 +136,14 @@ func search(strs []string, elm string) int {
 
 func include(strs []string, elm string) bool {
 	for _, v := range strs {
-		if v == elm {
+		if strings.Contains(elm, v) {
 			return true
 		}
 	}
 	return false
+}
+
+func print(color string, message string) {
+	fmt.Printf(color, message)
+	fmt.Println()
 }

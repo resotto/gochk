@@ -1,5 +1,5 @@
 {
   "targetPath": ".",
   "dependencyOrders": ["external", "adapter", "application", "domain"],
-  "ignoreDirs": [".git", "testdata"]
+  "ignore": ["testdata", "_test", "_mock"]
 }

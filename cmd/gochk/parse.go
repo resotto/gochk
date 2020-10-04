@@ -10,7 +10,7 @@ import (
 type Config struct {
 	TargetPath       string
 	DependencyOrders []string
-	IgnoreDirs       []string
+	Ignore           []string
 }
 
 // Parse parses config.json
