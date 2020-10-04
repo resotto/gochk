@@ -8,15 +8,10 @@ import (
 
 func main() {
 	flag.Parse()
-	argPath := flag.Arg(0) // if not provided, argPath is ""
 	config := gochk.Parse()
-
-	path := config.DefaultTargetPath
-	orders := config.DependencyOrders
-
+	argPath := flag.Arg(0) // if not provided, argPath is ""
 	if argPath != "" {
-		path = argPath
+		config.TargetPath = argPath
 	}
-
-	gochk.Check(path, orders)
+	gochk.Check(config)
 }

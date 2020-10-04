@@ -1,4 +1,5 @@
 {
-  "defaultTargetPath": ".",
-  "dependencyOrders": ["external", "adapter", "application", "domain"]
+  "targetPath": ".",
+  "dependencyOrders": ["external", "adapter", "application", "domain"],
+  "ignoreDirs": [".git", "testdata"]
 }

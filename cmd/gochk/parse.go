@@ -6,20 +6,20 @@ import (
 	"path/filepath"
 )
 
-// Config is converted data structure from config.json
+// Config is data converted from config.json
 type Config struct {
-	DefaultTargetPath string
-	DependencyOrders  []string
+	TargetPath       string
+	DependencyOrders []string
+	IgnoreDirs       []string
 }
 
-// Parse parses config.json and return its values
+// Parse parses config.json
 func Parse() Config {
 	absPath, _ := filepath.Abs("configs/config.json") // NOTICE: from root directory
 	bytes, err := ioutil.ReadFile(absPath)
 	if err != nil {
 		panic(err)
 	}
-
 	var config Config
 	json.Unmarshal(bytes, &config)
 	return config
