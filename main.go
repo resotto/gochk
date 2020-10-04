@@ -9,9 +9,8 @@ import (
 func main() {
 	flag.Parse()
 	config := gochk.Parse()
-	argPath := flag.Arg(0) // if not provided, argPath is ""
-	if argPath != "" {
-		config.TargetPath = argPath
+	if flag.Arg(0) != "" { // flag.Arg(0) equals to "" if not provided
+		config.TargetPath = flag.Arg(0)
 	}
 	gochk.Check(config)
 }

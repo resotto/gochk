@@ -48,8 +48,6 @@ func Check(cfg Config) {
 func checkDependency(dependencies []string, path string) {
 	currentLayer := search(dependencies, path)
 	importLayers := retrieveLayers(dependencies, path)
-	// fmt.Println("currentLayer: ", currentLayer) // debug
-	// fmt.Println("importLayers: ", importLayers) // debug
 
 	if len(importLayers) == 0 {
 		print(green, "[None] "+path)
@@ -76,7 +74,6 @@ func checkDependency(dependencies []string, path string) {
 func retrieveLayers(dependencies []string, path string) []dependency {
 	filepath, _ := filepath.Abs(path)
 	imports := readImports(filepath)
-	// fmt.Println("imports: ", imports) // debug
 	layers := make([]dependency, 0, len(imports))
 
 	for _, v := range imports {
@@ -92,7 +89,6 @@ func retrieveLayers(dependencies []string, path string) []dependency {
 }
 
 func readImports(filepath string) []string {
-	// fmt.Println("filepath: ", filepath) // debug
 	f, _ := os.Open(filepath)
 	defer f.Close()
 	scanner := bufio.NewScanner(f)
