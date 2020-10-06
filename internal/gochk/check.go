@@ -12,6 +12,7 @@ const (
 	red    = "\033[1;31m%s\033[0m"
 	yellow = "\033[1;33m%s\033[0m"
 	green  = "\033[1;32m%s\033[0m"
+	teal   = "\033[1;36m%s\033[0m"
 )
 
 type dependency struct {
@@ -28,10 +29,10 @@ func Check(cfg Config) {
 		}
 		if include(cfg.Ignore, path) { // todo
 			if info.IsDir() {
-				print(yellow, "[Ignored] "+path)
+				print(yellow, "[Ignored]  "+path)
 				return filepath.SkipDir
 			}
-			print(yellow, "[Ignored] "+path)
+			print(yellow, "[Ignored]  "+path)
 			return nil
 		}
 		if info.IsDir() || !strings.Contains(info.Name(), ".go") {
@@ -50,7 +51,7 @@ func checkDependency(dependencies []string, path string) {
 	importLayers := retrieveLayers(dependencies, path)
 
 	if len(importLayers) == 0 {
-		print(green, "[None] "+path)
+		print(teal, "[None]     "+path)
 		return
 	}
 	redDeps := make([]dependency, 0, len(importLayers))
@@ -63,8 +64,8 @@ func checkDependency(dependencies []string, path string) {
 	}
 	if len(redDeps) > 0 {
 		for _, d := range redDeps {
-			print(red, "[Error] "+path+" imports "+d.path)
-			print(red, "   └──  \""+dependencies[currentLayer]+"\" depends on \""+dependencies[d.index]+"\"")
+			print(red, "[Error]    "+path+" imports "+d.path)
+			print(red, "           \""+dependencies[currentLayer]+"\" depends on \""+dependencies[d.index]+"\"")
 		}
 	} else {
 		print(green, "[Verified] "+path)
