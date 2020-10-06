@@ -64,7 +64,7 @@ func checkDependency(dependencies []string, path string) {
 	if len(redDeps) > 0 {
 		for _, d := range redDeps {
 			print(red, "[Error] "+path+" imports "+d.path)
-			print(red, "[Error] \""+dependencies[currentLayer]+"\" depends on \""+dependencies[d.index]+"\"")
+			print(red, "   └──  \""+dependencies[currentLayer]+"\" depends on \""+dependencies[d.index]+"\"")
 		}
 	} else {
 		print(green, "[Verified] "+path)

@@ -1,5 +1,5 @@
 {
   "targetPath": ".",
   "dependencyOrders": ["external", "adapter", "application", "domain"],
-  "ignore": ["testdata", "_test"]
+  "ignore": ["test", "_test"]
 }

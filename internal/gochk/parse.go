@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-// Config is data converted from config.json
+// Config is data from config.json
 type Config struct {
 	TargetPath       string
 	DependencyOrders []string
