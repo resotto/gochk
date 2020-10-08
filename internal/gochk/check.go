@@ -1,7 +1,6 @@
 package gochk
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -96,39 +95,6 @@ func retrieveLayers(dependencies []string, path string, currentLayer int) []depe
 		}
 	}
 	return layers
-}
-
-func readImports(filepath string) []string {
-	f, _ := os.Open(filepath)
-	defer f.Close()
-	scanner := bufio.NewScanner(f)
-	multipleImport := false
-	imports := make([]string, 0, 10)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if strings.Contains(line, "import") {
-			if strings.Contains(line, "(") {
-				multipleImport = true
-				continue
-			}
-			imports = append(imports, retrievePath(line))
-			break
-		}
-		if multipleImport {
-			if strings.Contains(line, ")") {
-				break
-			} else if strings.EqualFold(line, "") {
-				continue
-			}
-			imports = append(imports, retrievePath(line))
-		}
-	}
-	return imports
-}
-
-func retrievePath(line string) string {
-	firstQuoIndex := strings.Index(line, "\"")
-	return line[firstQuoIndex:]
 }
 
 func search(strs []string, elm string) int {
