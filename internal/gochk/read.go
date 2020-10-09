@@ -26,7 +26,7 @@ func retrieveMultipleImportPath(scanner *bufio.Scanner, line string) []string {
 	imports := make([]string, 0, 10)
 	for scanner.Scan() {
 		line = scanner.Text()
-		if strings.Contains(line, ")") {
+		if strings.EqualFold(line, ")") {
 			break
 		} else if strings.EqualFold(line, "") {
 			continue
