@@ -14,7 +14,7 @@ type dependency struct {
 	index        int
 }
 
-// Check makes sure that the direction of dependencies is correct
+// Check ensures that the direction of dependencies is correct
 func Check(cfg Config) {
 	errorDeps, err := walkFiles(cfg)
 	if err != nil {
@@ -37,14 +37,13 @@ func walkFiles(cfg Config) ([]dependency, error) {
 		if ignored, ignoreError := matchIgnore(cfg.Ignore, path, info); ignored {
 			return ignoreError
 		}
-		tempDeps := checkDependency(cfg.DependencyOrders, path)
-		errorDeps = append(errorDeps, tempDeps...)
+		errorDeps = append(errorDeps, (checkDependency(cfg.DependencyOrders, path))...)
 		return nil
 	})
 }
 
 func matchIgnore(ignorePaths []string, path string, info os.FileInfo) (bool, error) {
-	if include(ignorePaths, path) {
+	if included, _ := include(ignorePaths, path); included {
 		printIgnored(path)
 		if info.IsDir() {
 			return true, filepath.SkipDir
@@ -57,11 +56,25 @@ func matchIgnore(ignorePaths []string, path string, info os.FileInfo) (bool, err
 	return false, nil
 }
 
-func include(strs []string, s string) bool {
-	for _, v := range strs {
+func checkDependency(dependencies []string, path string) []dependency {
+	_, currentLayer := include(dependencies, path)
+	importLayers := retrieveLayers(dependencies, path, currentLayer)
+	if len(importLayers) == 0 {
+		printNone(path)
+		return nil
+	}
+	if violates := retrieveViolates(currentLayer, importLayers); len(violates) > 0 {
+		return violates
+	}
+	printVerified(path)
+	return nil
+}
+
+func include(strs []string, s string) (bool, int) {
+	for i, v := range strs {
 		if strings.Contains(s, v) {
-			return true
+			return true, i
 		}
 	}
-	return false
+	return false, -1
 }
