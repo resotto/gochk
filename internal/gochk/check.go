@@ -71,9 +71,15 @@ func checkDependency(dependencies []string, path string) []dependency {
 }
 
 func retrieveLayers(dependencies []string, path string, currentLayer int) []dependency {
+	layers := make([]dependency, 0, 10)
 	filepath, _ := filepath.Abs(path)
-	imports := readImports(filepath)
-	layers := make([]dependency, 0, len(imports))
+	f, err := os.Open(filepath)
+	defer f.Close()
+	if err != nil {
+		printWarning(filepath)
+		return layers
+	}
+	imports := readImports(f)
 
 	for _, v := range imports {
 		l := search(dependencies, v)

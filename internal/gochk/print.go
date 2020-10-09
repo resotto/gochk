@@ -25,3 +25,7 @@ func printError(filepath string, path string, dependencyOrders []string, current
 	fmt.Printf(red, "[Error]", filepath+" imports "+path)
 	fmt.Printf(red, "", dependencyOrders[currentLayer]+" depends on "+dependencyOrders[index])
 }
+
+func printWarning(path string) {
+	fmt.Printf(yellow, "WARNING", "cannot open "+path)
+}

@@ -6,9 +6,7 @@ import (
 	"strings"
 )
 
-func readImports(filepath string) []string {
-	f, _ := os.Open(filepath)
-	defer f.Close()
+func readImports(f *os.File) []string {
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
 		line := scanner.Text()
