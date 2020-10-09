@@ -9,26 +9,19 @@ const (
 	teal   = "\033[1;36m%-11s%s\n\033[0m"
 )
 
-const (
-	none     = "[None]"
-	verified = "[Verified]"
-	ignored  = "[Ignored]"
-	err      = "[Error]"
-)
-
 func printNone(path string) {
-	fmt.Printf(teal, none, path)
+	fmt.Printf(teal, "[None]", path)
 }
 
 func printVerified(path string) {
-	fmt.Printf(green, verified, path)
+	fmt.Printf(green, "[Verified]", path)
 }
 
 func printIgnored(path string) {
-	fmt.Printf(yellow, ignored, path)
+	fmt.Printf(yellow, "[Ignored]", path)
 }
 
 func printError(filepath string, path string, dependencyOrders []string, currentLayer int, index int) {
-	fmt.Printf(red, err, filepath+" imports "+path)
+	fmt.Printf(red, "[Error]", filepath+" imports "+path)
 	fmt.Printf(red, "", dependencyOrders[currentLayer]+" depends on "+dependencyOrders[index])
 }
