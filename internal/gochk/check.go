@@ -34,16 +34,8 @@ func walkFiles(cfg Config) ([]dependency, error) {
 			fmt.Println(err)
 			return nil
 		}
-		if include(cfg.Ignore, path) {
-			if info.IsDir() {
-				printIgnored(path)
-				return filepath.SkipDir
-			}
-			printIgnored(path)
-			return nil
-		}
-		if info.IsDir() || !strings.Contains(info.Name(), ".go") {
-			return nil
+		if ignored, ignoreError := matchIgnore(cfg.Ignore, path, info); ignored {
+			return ignoreError
 		}
 		tempDeps := checkDependency(cfg.DependencyOrders, path)
 		errorDeps = append(errorDeps, tempDeps...)
@@ -51,9 +43,23 @@ func walkFiles(cfg Config) ([]dependency, error) {
 	})
 }
 
-func include(strs []string, elm string) bool {
+func matchIgnore(ignorePaths []string, path string, info os.FileInfo) (bool, error) {
+	if include(ignorePaths, path) {
+		printIgnored(path)
+		if info.IsDir() {
+			return true, filepath.SkipDir
+		}
+		return true, nil
+	}
+	if info.IsDir() || !strings.Contains(info.Name(), ".go") {
+		return true, nil
+	}
+	return false, nil
+}
+
+func include(strs []string, s string) bool {
 	for _, v := range strs {
-		if strings.Contains(elm, v) {
+		if strings.Contains(s, v) {
 			return true
 		}
 	}

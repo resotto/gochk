@@ -23,7 +23,7 @@ func printIgnored(path string) {
 
 func printError(filepath string, path string, dependencyOrders []string, currentLayer int, index int) {
 	fmt.Printf(red, "[Error]", filepath+" imports "+path)
-	fmt.Printf(red, "", dependencyOrders[currentLayer]+" depends on "+dependencyOrders[index])
+	fmt.Printf(red, "", "=> "+dependencyOrders[currentLayer]+" depends on "+dependencyOrders[index])
 }
 
 func printWarning(path string) {
