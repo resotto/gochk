@@ -9,8 +9,7 @@ import (
 func readImports(f *os.File) []string {
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
-		line := scanner.Text()
-		if len(line) > 6 && strings.EqualFold(line[:6], "import") {
+		if line := scanner.Text(); len(line) > 6 && strings.EqualFold(line[:6], "import") {
 			if strings.Contains(line, "(") {
 				return retrieveMultipleImportPath(scanner, line)
 			}
