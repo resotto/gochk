@@ -24,6 +24,7 @@ func Check(cfg Config) {
 		for _, d := range errorDeps {
 			printError(d.filepath, d.path, cfg.DependencyOrders, d.currentLayer, d.index)
 		}
+		panic("Dependencies which violate dependency orders found!")
 	}
 }
 

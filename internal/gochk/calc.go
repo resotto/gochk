@@ -37,7 +37,6 @@ func retrieveViolates(currentLayer int, importLayers []dependency) []dependency 
 	for _, d := range importLayers {
 		if d.index < currentLayer {
 			violates = append(violates, d)
-			continue
 		}
 	}
 	return violates
