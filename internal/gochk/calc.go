@@ -1,21 +1,6 @@
 package gochk
 
-import (
-	"os"
-	"path/filepath"
-)
-
-func retrieveLayers(dependencies []string, path string, currentLayer int) []dependency {
-	filepath, _ := filepath.Abs(path)
-	f, err := os.Open(filepath)
-	defer f.Close()
-	if err != nil {
-		printWarning(filepath)
-		return []dependency{}
-	}
-	importPaths := readImports(f)
-	return retrieveIndices(importPaths, dependencies, path, currentLayer)
-}
+import "strings"
 
 func retrieveIndices(importPaths []string, dependencies []string, path string, currentLayer int) []dependency {
 	layers := make([]dependency, 0, 10)
@@ -32,12 +17,26 @@ func retrieveIndices(importPaths []string, dependencies []string, path string, c
 	return layers
 }
 
-func retrieveViolates(currentLayer int, importLayers []dependency) []dependency {
-	violates := make([]dependency, 0, len(importLayers))
+func retrieveViolations(currentLayer int, importLayers []dependency) []dependency {
+	violations := make([]dependency, 0, len(importLayers))
 	for _, d := range importLayers {
 		if d.index < currentLayer {
-			violates = append(violates, d)
+			violations = append(violations, d)
 		}
 	}
-	return violates
+	return violations
+}
+
+func retrieveImportPath(line string) string {
+	firstQuoIndex := strings.Index(line, "\"")
+	return line[firstQuoIndex:]
+}
+
+func include(strs []string, s string) (bool, int) {
+	for i, v := range strs {
+		if strings.Contains(s, v) {
+			return true, i
+		}
+	}
+	return false, -1
 }
