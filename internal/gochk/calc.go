@@ -29,6 +29,9 @@ func retrieveViolations(currentLayer int, importLayers []dependency) []dependenc
 
 func retrieveImportPath(line string) string {
 	firstQuoIndex := strings.Index(line, "\"")
+	if firstQuoIndex == -1 {
+		return ""
+	}
 	return line[firstQuoIndex:]
 }
 
