@@ -1,0 +1,5 @@
+/*
+This file cannot be opened.
+*/
+
+package adapter
