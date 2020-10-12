@@ -14,6 +14,7 @@ const (
 	pfmt     = "\"fmt\""
 	pstrings = "\"strings\""
 
+	testDirPath         = "../../test/data/test"
 	underscoreTestPath  = "../../test/data/_test.go"
 	blockCommentsPath   = "../../test/data/blockComments.go"
 	lockfilePath        = "../../test/data/lockfile.txt"
@@ -45,11 +46,45 @@ func createFile(path string, contentsPath string, permission os.FileMode) string
 	return filepath
 }
 
-func removeFile(filepath string) {
+func removeFile(path string) {
+	filepath, _ := filepath.Abs(path)
 	err := os.Remove(filepath)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func mkdir(path string, permission os.FileMode) {
+	filepath, _ := filepath.Abs(path)
+	err := os.Mkdir(filepath, permission)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func rmdir(path string) {
+	filepath, _ := filepath.Abs(path)
+	err := os.Remove(filepath)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func setup() {
+	mkdir(testDirPath, os.ModePerm)
+	createFile(lockedPath, lockfilePath, 0300)
+}
+
+func teardown() {
+	rmdir(testDirPath)
+	removeFile(lockedPath)
+}
+
+func TestMain(m *testing.M) {
+	setup()
+	result := m.Run()
+	teardown()
+	os.Exit(result)
 }
 
 func TestMatchIgnore(t *testing.T) {
@@ -66,7 +101,7 @@ func TestMatchIgnore(t *testing.T) {
 		{
 			"test dir",
 			ignorePaths,
-			"../../test/data/test",
+			testDirPath,
 			result{matched: true, err: filepath.SkipDir},
 		},
 		{
@@ -111,8 +146,6 @@ func TestMatchIgnore(t *testing.T) {
 }
 
 func TestRetrieveLayers(t *testing.T) {
-	filepath := createFile(lockedPath, lockfilePath, 0300)
-	defer removeFile(filepath)
 	tests := []struct {
 		name         string
 		dependencies []string
