@@ -1,0 +1,7 @@
+package application
+
+import "github.com/resotto/gochk/test/data/adapter"
+
+var (
+    third = adapter.Third{}
+)

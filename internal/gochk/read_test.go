@@ -19,6 +19,8 @@ const (
 	blockCommentsPath   = "../../test/data/blockComments.go"
 	lockfilePath        = "../../test/data/lockfile.txt"
 	lockedPath          = "../../test/data/adapter/locked.go"
+	violatefilePath     = "../../test/data/violatefile.txt"
+	violatePath         = "../../test/data/application/violate.go"
 	multipleImportsPath = "../../test/data/multipleImports.go"
 	oneImportPath       = "../../test/data/oneImport.go"
 	singleCommentsPath  = "../../test/data/singleComments.go"
@@ -41,8 +43,7 @@ func createFile(path string, contentsPath string, permission os.FileMode) string
 		panic(rerr)
 	}
 	filepath, _ := filepath.Abs(path)
-	ioutil.WriteFile(filepath, bytes, 0700)
-	os.Chmod(path, permission)
+	ioutil.WriteFile(filepath, bytes, permission)
 	return filepath
 }
 
@@ -73,11 +74,13 @@ func rmdir(path string) {
 func setup() {
 	mkdir(testDirPath, os.ModePerm)
 	createFile(lockedPath, lockfilePath, 0300)
+	createFile(violatePath, violatefilePath, os.ModePerm)
 }
 
 func teardown() {
 	rmdir(testDirPath)
 	removeFile(lockedPath)
+	removeFile(violatePath)
 }
 
 func TestMain(m *testing.M) {
@@ -85,6 +88,46 @@ func TestMain(m *testing.M) {
 	result := m.Run()
 	teardown()
 	os.Exit(result)
+}
+
+func TestWalkFiles(t *testing.T) {
+	oneViolationTitle := "one violation"
+	tests := []struct {
+		name     string
+		cfg      Config
+		expected []dependency
+	}{
+		{
+			"no violations",
+			Config{
+				TargetPath:       "../../test/data",
+				DependencyOrders: dependencies,
+				Ignore:           ignorePaths,
+			},
+			[]dependency{},
+		},
+		{
+			oneViolationTitle,
+			Config{
+				TargetPath:       "../../test/data",
+				DependencyOrders: dependencies,
+				Ignore:           []string{},
+			},
+			[]dependency{
+				dependency{violatePath, 1, adapterPkgPath, 2},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			results, _ := walkFiles(tt.cfg)
+			if len(results) != len(tt.expected) {
+				t.Errorf("got %d, want %d", len(results), len(tt.expected))
+			}
+		})
+	}
 }
 
 func TestMatchIgnore(t *testing.T) {
@@ -130,7 +173,6 @@ func TestMatchIgnore(t *testing.T) {
 			err := filepath.Walk(tt.targetPath, func(path string, info os.FileInfo, err error) error {
 				matched, err := matchIgnore(tt.ignorePaths, path, info)
 				if matched != tt.expected.matched {
-					fmt.Println(tt.name, path) // debug
 					t.Errorf("got %t, want %t", matched, tt.expected.matched)
 				}
 				if err != tt.expected.err {
