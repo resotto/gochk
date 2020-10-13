@@ -8,9 +8,10 @@ import (
 
 func main() {
 	flag.Parse()
-	config := gochk.Parse()
+	config := gochk.ParseConfig()
 	if flag.Arg(0) != "" {
 		config.TargetPath = flag.Arg(0)
 	}
-	gochk.Check(config)
+	results := gochk.Check(config)
+	gochk.Show(results)
 }

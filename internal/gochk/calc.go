@@ -2,26 +2,29 @@ package gochk
 
 import "strings"
 
-func retrieveIndices(importPaths []string, dependencies []string, path string, currentLayer int) []dependency {
-	layers := make([]dependency, 0, 10)
-	for _, importPath := range importPaths {
-		if included, i := include(dependencies, importPath); included {
-			layers = append(layers, dependency{
-				filepath:     path,
-				currentLayer: currentLayer,
-				path:         importPath,
-				index:        i,
-			})
-		}
+// judge path as none, verified or violated
+func judgeResultType(dependencyOrders []string, path string) []CheckResult {
+	results := make([]CheckResult, 0, 10)
+	_, currentLayer := include(dependencyOrders, path)
+	dependencies := retrieveDependencies(dependencyOrders, path, currentLayer)
+	if len(dependencies) == 0 {
+		results = append(results, CheckResult{resultType: none, message: path, color: teal})
+		return results
 	}
-	return layers
+	if violations := retrieveViolations(dependencyOrders, currentLayer, dependencies); len(violations) > 0 {
+		results = append(results, violations...)
+		return results
+	}
+	results = append(results, CheckResult{resultType: verified, message: path, color: green})
+	return results
 }
 
-func retrieveViolations(currentLayer int, importLayers []dependency) []dependency {
-	violations := make([]dependency, 0, len(importLayers))
-	for _, d := range importLayers {
-		if d.index < currentLayer {
-			violations = append(violations, d)
+func retrieveViolations(dependencyOrders []string, currentLayer int, dependencies []dependency) []CheckResult {
+	violations := make([]CheckResult, 0, len(dependencies))
+	for _, d := range dependencies {
+		if d.importLayer < currentLayer {
+			message := d.filePath + " imports " + d.importPath + "\n => " + dependencyOrders[d.fileLayer] + " depends on " + dependencyOrders[d.importLayer]
+			violations = append(violations, CheckResult{resultType: violated, message: message, color: red})
 		}
 	}
 	return violations

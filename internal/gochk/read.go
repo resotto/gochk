@@ -3,22 +3,45 @@ package gochk
 import (
 	"bufio"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
-// Config is data from config.json
+// Config is converted data of config.json
 type Config struct {
 	TargetPath       string
 	DependencyOrders []string
 	Ignore           []string
 }
 
-// Parse parses config.json
-func Parse() Config {
+type resultType string
+
+const (
+	none     resultType = "None"
+	verified            = "Verified"
+	ignored             = "Ignored"
+	warning             = "Warning"
+	violated            = "Violated"
+)
+
+// CheckResult is the result of dependency checking
+type CheckResult struct {
+	resultType resultType
+	message    string
+	color      color
+}
+
+type dependency struct {
+	filePath    string
+	fileLayer   int
+	importPath  string
+	importLayer int
+}
+
+// ParseConfig parses config.json
+func ParseConfig() Config {
 	absPath, _ := filepath.Abs("configs/config.json") // NOTICE: from root directory
 	bytes, err := ioutil.ReadFile(absPath)
 	if err != nil {
@@ -29,24 +52,26 @@ func Parse() Config {
 	return config
 }
 
-func walkFiles(cfg Config) ([]dependency, error) {
-	violations := make([]dependency, 0, 0)
-	return violations, filepath.Walk(cfg.TargetPath, func(path string, info os.FileInfo, err error) error {
+// Check checks dependencies
+func Check(cfg Config) []CheckResult {
+	results := make([]CheckResult, 0, 1000)
+	filepath.Walk(cfg.TargetPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			fmt.Println(err)
+			results = append(results, CheckResult{resultType: warning, message: err.Error(), color: purple})
 			return nil
 		}
 		if matched, skipType := matchIgnore(cfg.Ignore, path, info); matched {
+			results = append(results, CheckResult{resultType: ignored, message: path, color: yellow})
 			return skipType
 		}
-		violations = append(violations, (checkDependency(cfg.DependencyOrders, path))...)
+		results = append(results, judgeResultType(cfg.DependencyOrders, path)...)
 		return nil
 	})
+	return results
 }
 
 func matchIgnore(ignorePaths []string, path string, info os.FileInfo) (bool, error) {
 	if included, _ := include(ignorePaths, path); included {
-		printIgnored(path)
 		if info.IsDir() {
 			return true, filepath.SkipDir
 		}
@@ -58,16 +83,21 @@ func matchIgnore(ignorePaths []string, path string, info os.FileInfo) (bool, err
 	return false, nil
 }
 
-func retrieveLayers(dependencies []string, path string, currentLayer int) []dependency {
+func retrieveDependencies(dependencyOrders []string, path string, currentLayer int) []dependency {
 	filepath, _ := filepath.Abs(path)
 	f, err := os.Open(filepath)
 	defer f.Close()
 	if err != nil {
-		printWarning(filepath)
 		return []dependency{}
 	}
 	importPaths := readImports(f)
-	return retrieveIndices(importPaths, dependencies, path, currentLayer)
+	dependencies := make([]dependency, 0, len(importPaths))
+	for _, importPath := range importPaths {
+		if included, i := include(dependencyOrders, importPath); included {
+			dependencies = append(dependencies, dependency{filePath: path, fileLayer: currentLayer, importPath: importPath, importLayer: i})
+		}
+	}
+	return dependencies
 }
 
 func readImports(f *os.File) []string {
