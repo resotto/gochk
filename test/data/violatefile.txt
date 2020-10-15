@@ -3,5 +3,5 @@ package application
 import "github.com/resotto/gochk/test/data/adapter"
 
 var (
-    third = adapter.Third{}
+    violated = adapter.Third{}
 )

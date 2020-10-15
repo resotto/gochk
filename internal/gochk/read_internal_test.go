@@ -2,7 +2,6 @@ package gochk
 
 import (
 	"bufio"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -24,6 +23,8 @@ const (
 	multipleImportsPath = "../../test/data/multipleImports.go"
 	oneImportPath       = "../../test/data/oneImport.go"
 	singleCommentsPath  = "../../test/data/singleComments.go"
+	firstLayerPath      = "../../test/data/domain/firstLayer.go"
+	secondLayerPath     = "../../test/data/application/secondLayer.go"
 	fourthLayerPath     = "../../test/data/external/fourthLayer.go"
 
 	adapterPkgPath     = "\"github.com/resotto/gochk/test/data/adapter\""
@@ -32,8 +33,8 @@ const (
 )
 
 var (
-	ignorePaths  = []string{"test", "_test"}
-	dependencies = []string{"external", "adapter", "application", "domain"}
+	ignorePaths      = []string{"test", "_test"}
+	dependencyOrders = []string{"external", "adapter", "application", "domain"}
 )
 
 func createFile(path string, contentsPath string, permission os.FileMode) string {
@@ -90,41 +91,48 @@ func TestMain(m *testing.M) {
 	os.Exit(result)
 }
 
-func TestWalkFiles(t *testing.T) {
-	oneViolationTitle := "one violation"
+func TestCheck(t *testing.T) {
 	tests := []struct {
 		name     string
 		cfg      Config
-		expected []dependency
+		expected []CheckResult
 	}{
 		{
-			"no violations",
+			"violation found",
 			Config{
-				TargetPath:       "../../test/data",
-				DependencyOrders: dependencies,
-				Ignore:           ignorePaths,
-			},
-			[]dependency{},
-		},
-		{
-			oneViolationTitle,
-			Config{
-				TargetPath:       "../../test/data",
-				DependencyOrders: dependencies,
+				TargetPath:       violatePath,
+				DependencyOrders: dependencyOrders,
 				Ignore:           []string{},
 			},
-			[]dependency{
-				dependency{violatePath, 1, adapterPkgPath, 2},
+			[]CheckResult{
+				CheckResult{resultType: violated, message: "not tested", color: red},
 			},
+		},
+		{
+			"no results",
+			Config{
+				TargetPath:       violatefilePath,
+				DependencyOrders: dependencyOrders,
+				Ignore:           []string{},
+			},
+			[]CheckResult{},
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			results, _ := walkFiles(tt.cfg)
+			results := Check(tt.cfg)
 			if len(results) != len(tt.expected) {
 				t.Errorf("got %d, want %d", len(results), len(tt.expected))
+			}
+			for i, r := range results {
+				if r.resultType != tt.expected[i].resultType {
+					t.Errorf("got %s, want %s", r.resultType, tt.expected[i].resultType)
+				}
+				if r.color != tt.expected[i].color {
+					t.Errorf("got %s, want %s", r.color, tt.expected[i].color)
+				}
 			}
 		})
 	}
@@ -151,12 +159,6 @@ func TestMatchIgnore(t *testing.T) {
 			"_test.go file",
 			ignorePaths,
 			underscoreTestPath,
-			result{matched: true, err: nil},
-		},
-		{
-			"file which is not included in ignore and is not .go",
-			ignorePaths,
-			lockfilePath,
 			result{matched: true, err: nil},
 		},
 		{
@@ -187,7 +189,7 @@ func TestMatchIgnore(t *testing.T) {
 	}
 }
 
-func TestRetrieveLayers(t *testing.T) {
+func TestRetrieveDependencies(t *testing.T) {
 	tests := []struct {
 		name         string
 		dependencies []string
@@ -196,19 +198,17 @@ func TestRetrieveLayers(t *testing.T) {
 		expected     []dependency
 	}{
 		{
-			"four layers retrieval",
-			dependencies,
+			"one layer retrieval",
+			dependencyOrders,
 			fourthLayerPath,
 			0,
 			[]dependency{
-				dependency{fourthLayerPath, 0, adapterPkgPath, 1},
-				dependency{fourthLayerPath, 0, applicationPkgPath, 2},
 				dependency{fourthLayerPath, 0, domainPkgPath, 3},
 			},
 		},
 		{
 			"include file which couldn't be opened",
-			dependencies,
+			dependencyOrders,
 			lockedPath,
 			1,
 			[]dependency{},
@@ -218,20 +218,19 @@ func TestRetrieveLayers(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			results := retrieveLayers(tt.dependencies, tt.path, tt.currentLayer)
-			fmt.Println(results)
+			results, _ := retrieveDependencies(tt.dependencies, tt.path, tt.currentLayer)
 			for i, r := range results {
-				if r.filepath != tt.expected[i].filepath {
-					t.Errorf("got %s, want %s", r.filepath, tt.expected[i].filepath)
+				if r.filePath != tt.expected[i].filePath {
+					t.Errorf("got %s, want %s", r.filePath, tt.expected[i].filePath)
 				}
-				if r.currentLayer != tt.expected[i].currentLayer {
-					t.Errorf("got %d, want %d", r.currentLayer, tt.expected[i].currentLayer)
+				if r.fileLayer != tt.expected[i].fileLayer {
+					t.Errorf("got %d, want %d", r.fileLayer, tt.expected[i].fileLayer)
 				}
-				if r.path != tt.expected[i].path {
-					t.Errorf("got %s, want %s", r.path, tt.expected[i].path)
+				if r.importPath != tt.expected[i].importPath {
+					t.Errorf("got %s, want %s", r.importPath, tt.expected[i].importPath)
 				}
-				if r.index != tt.expected[i].index {
-					t.Errorf("got %d, want %d", r.index, tt.expected[i].index)
+				if r.importLayer != tt.expected[i].importLayer {
+					t.Errorf("got %d, want %d", r.importLayer, tt.expected[i].importLayer)
 				}
 			}
 		})
