@@ -1,7 +1,6 @@
 package gochk
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -64,7 +63,6 @@ func TestSetResultType(t *testing.T) {
 			t.Parallel()
 			setResultType(&tt.checkResults, tt.dependencyOrders, tt.path)
 			if len(tt.checkResults) != len(tt.expected) {
-				fmt.Println(tt.checkResults)
 				t.Errorf("got %d, want %d", len(tt.checkResults), len(tt.expected))
 			}
 			for i, r := range tt.checkResults {
