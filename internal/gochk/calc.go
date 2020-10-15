@@ -2,21 +2,22 @@ package gochk
 
 import "strings"
 
-// judge path as none, verified or violated
-func judgeResultType(dependencyOrders []string, path string) []CheckResult {
-	results := make([]CheckResult, 0, 10)
+func setResultType(results *[]CheckResult, dependencyOrders []string, path string) {
 	_, currentLayer := include(dependencyOrders, path)
-	dependencies := retrieveDependencies(dependencyOrders, path, currentLayer)
+	dependencies, err := retrieveDependencies(dependencyOrders, path, currentLayer)
+	if err != nil {
+		*results = append([]CheckResult{CheckResult{resultType: warning, message: err.Error(), color: purple}}, *results...)
+		return
+	}
 	if len(dependencies) == 0 {
-		results = append(results, CheckResult{resultType: none, message: path, color: teal})
-		return results
+		*results = append([]CheckResult{CheckResult{resultType: none, message: path, color: teal}}, *results...)
+		return
 	}
 	if violations := retrieveViolations(dependencyOrders, currentLayer, dependencies); len(violations) > 0 {
-		results = append(results, violations...)
-		return results
+		*results = append(*results, violations...)
+		return
 	}
-	results = append(results, CheckResult{resultType: verified, message: path, color: green})
-	return results
+	*results = append([]CheckResult{CheckResult{resultType: verified, message: path, color: green}}, *results...)
 }
 
 func retrieveViolations(dependencyOrders []string, currentLayer int, dependencies []dependency) []CheckResult {

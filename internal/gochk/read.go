@@ -57,14 +57,17 @@ func Check(cfg Config) []CheckResult {
 	results := make([]CheckResult, 0, 1000)
 	filepath.Walk(cfg.TargetPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			results = append(results, CheckResult{resultType: warning, message: err.Error(), color: purple})
+			results = append([]CheckResult{CheckResult{resultType: warning, message: err.Error(), color: purple}}, results...)
 			return nil
 		}
 		if matched, skipType := matchIgnore(cfg.Ignore, path, info); matched {
-			results = append(results, CheckResult{resultType: ignored, message: path, color: yellow})
+			results = append([]CheckResult{CheckResult{resultType: ignored, message: path, color: yellow}}, results...)
 			return skipType
 		}
-		results = append(results, judgeResultType(cfg.DependencyOrders, path)...)
+		if info.IsDir() || !strings.Contains(info.Name(), ".go") {
+			return nil
+		}
+		setResultType(&results, cfg.DependencyOrders, path)
 		return nil
 	})
 	return results
@@ -77,18 +80,15 @@ func matchIgnore(ignorePaths []string, path string, info os.FileInfo) (bool, err
 		}
 		return true, nil
 	}
-	if info.IsDir() || !strings.Contains(info.Name(), ".go") {
-		return true, nil
-	}
 	return false, nil
 }
 
-func retrieveDependencies(dependencyOrders []string, path string, currentLayer int) []dependency {
+func retrieveDependencies(dependencyOrders []string, path string, currentLayer int) ([]dependency, error) {
 	filepath, _ := filepath.Abs(path)
 	f, err := os.Open(filepath)
 	defer f.Close()
 	if err != nil {
-		return []dependency{}
+		return []dependency{}, err
 	}
 	importPaths := readImports(f)
 	dependencies := make([]dependency, 0, len(importPaths))
@@ -97,7 +97,7 @@ func retrieveDependencies(dependencyOrders []string, path string, currentLayer i
 			dependencies = append(dependencies, dependency{filePath: path, fileLayer: currentLayer, importPath: importPath, importLayer: i})
 		}
 	}
-	return dependencies
+	return dependencies, nil
 }
 
 func readImports(f *os.File) []string {
