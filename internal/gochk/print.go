@@ -30,9 +30,25 @@ func Show(results []CheckResult) {
 		log.Fatal("Dependencies which violate dependency orders found!")
 	} else {
 		log.Print("No violations")
+		printAA()
 	}
 }
 
 func printColorMessage(cr CheckResult) {
 	fmt.Printf("%s%-11s%s\n%s", cr.color, "["+cr.resultType+"]", cr.message, reset)
+}
+
+func printAA() {
+	aa := []string{
+		"    ________     _______       ______    __     __    __   _ _",
+		"   /  ______\\   /  ___  \\     /  ____\\  |  |   |  |  |  | /   /",
+		"  /  /  ____   /  /   \\  \\   /  /       |  |___|  |  |  |/   /",
+		" /  /  |_   | |  |     |  | |  |        |   ___   |  |      /",
+		" \\  \\    \\  | |  |     |  | |  |        |  |   |  |  |  |\\  \\",
+		"  \\  \\___/  /  \\  \\___/  /   \\  \\_____  |  |   |  |  |  | \\  \\",
+		"   \\_______/    \\_______/     \\_______\\ |__|   |__|  |__|  \\__\\",
+	}
+	for _, s := range aa {
+		fmt.Println(s)
+	}
 }
