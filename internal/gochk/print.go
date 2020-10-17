@@ -28,6 +28,8 @@ func Show(results []CheckResult) {
 	}
 	if violatesIncluded {
 		log.Fatal("Dependencies which violate dependency orders found!")
+	} else {
+		log.Print("No violations")
 	}
 }
 

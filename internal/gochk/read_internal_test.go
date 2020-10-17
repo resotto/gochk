@@ -44,7 +44,10 @@ func createFile(path string, contentsPath string, permission os.FileMode) string
 		panic(rerr)
 	}
 	filepath, _ := filepath.Abs(path)
-	ioutil.WriteFile(filepath, bytes, permission)
+	err := ioutil.WriteFile(filepath, bytes, permission)
+	if err != nil {
+		panic(err)
+	}
 	return filepath
 }
 
