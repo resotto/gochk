@@ -128,9 +128,10 @@ func TestCheckPerformance(t *testing.T) {
 		{
 			"Check() performance test",
 			gochk.Config{
-				TargetPath:       "../performance/",
-				DependencyOrders: dependencyOrders,
-				Ignore:           []string{"test"},
+				TargetPath:                 "../performance/",
+				DependencyOrders:           dependencyOrders,
+				Ignore:                     []string{"test"},
+				PrintViolationsAtTheBottom: true,
 			},
 			"1m10s",
 		},

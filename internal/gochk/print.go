@@ -3,6 +3,7 @@ package gochk
 import (
 	"fmt"
 	"log"
+	"sync"
 )
 
 // Color is ANSI escape code
@@ -18,13 +19,12 @@ const (
 )
 
 // Show prints results
-func Show(results []CheckResult) {
+func Show(results []CheckResult, printViolationsAtTheBottom bool) {
 	violatesIncluded := false
-	for _, r := range results {
-		printColorMessage(r)
-		if !violatesIncluded && r.resultType == violated {
-			violatesIncluded = true
-		}
+	if printViolationsAtTheBottom {
+		violatesIncluded = printSequentially(results)
+	} else {
+		violatesIncluded = printConcurrently(results)
 	}
 	if violatesIncluded {
 		log.Fatal("Dependencies which violate dependency orders found!")
@@ -32,6 +32,45 @@ func Show(results []CheckResult) {
 		log.Print("No violations")
 		printAA()
 	}
+}
+
+func printConcurrently(results []CheckResult) bool {
+	c := make(chan struct{}, 10)
+	buf := make(chan bool, 10)
+	buf <- false
+	var wg sync.WaitGroup
+	for _, r := range results {
+		r := r
+		c <- struct{}{}
+		wg.Add(1)
+		go func() {
+			defer func() { <-c; wg.Done() }()
+			printColorMessage(r)
+			included := <-buf
+			if r.resultType == violated {
+				buf <- (included || true)
+			} else {
+				buf <- (included || false)
+			}
+		}()
+	}
+	wg.Wait()
+	violatesIncluded := <-buf
+	for len(buf) > 0 {
+		violatesIncluded = violatesIncluded || <-buf
+	}
+	return violatesIncluded
+}
+
+func printSequentially(results []CheckResult) bool {
+	violatesIncluded := false
+	for _, r := range results {
+		printColorMessage(r)
+		if !violatesIncluded && r.resultType == violated {
+			violatesIncluded = true
+		}
+	}
+	return violatesIncluded
 }
 
 func printColorMessage(cr CheckResult) {

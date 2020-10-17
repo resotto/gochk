@@ -13,5 +13,5 @@ func main() {
 		config.TargetPath = flag.Arg(0)
 	}
 	results := gochk.Check(config)
-	gochk.Show(results)
+	gochk.Show(results, config.PrintViolationsAtTheBottom)
 }

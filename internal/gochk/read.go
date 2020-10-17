@@ -11,9 +11,10 @@ import (
 
 // Config is converted data of config.json
 type Config struct {
-	TargetPath       string
-	DependencyOrders []string
-	Ignore           []string
+	TargetPath                 string
+	DependencyOrders           []string
+	Ignore                     []string
+	PrintViolationsAtTheBottom bool
 }
 
 type resultType string

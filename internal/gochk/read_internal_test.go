@@ -103,9 +103,10 @@ func TestCheck(t *testing.T) {
 		{
 			"violation found",
 			Config{
-				TargetPath:       violatePath,
-				DependencyOrders: dependencyOrders,
-				Ignore:           []string{},
+				TargetPath:                 violatePath,
+				DependencyOrders:           dependencyOrders,
+				Ignore:                     []string{},
+				PrintViolationsAtTheBottom: true,
 			},
 			[]CheckResult{
 				CheckResult{resultType: violated, message: "not tested", color: red},
@@ -114,9 +115,10 @@ func TestCheck(t *testing.T) {
 		{
 			"no results",
 			Config{
-				TargetPath:       violatefilePath,
-				DependencyOrders: dependencyOrders,
-				Ignore:           []string{},
+				TargetPath:                 violatefilePath,
+				DependencyOrders:           dependencyOrders,
+				Ignore:                     []string{},
+				PrintViolationsAtTheBottom: true,
 			},
 			[]CheckResult{},
 		},
