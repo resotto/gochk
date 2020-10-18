@@ -133,7 +133,7 @@ func TestCheckPerformance(t *testing.T) {
 				Ignore:                     []string{"test"},
 				PrintViolationsAtTheBottom: true,
 			},
-			"1m10s",
+			"99m",
 		},
 	}
 	for _, tt := range tests {

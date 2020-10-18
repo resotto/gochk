@@ -69,7 +69,7 @@ func Check(cfg Config) ([]CheckResult, bool) {
 		if info.IsDir() || !strings.Contains(info.Name(), ".go") {
 			return nil
 		}
-		violated = violated || setResultType(&results, cfg.DependencyOrders, path)
+		violated = setResultType(&results, cfg.DependencyOrders, path) || violated
 		return nil
 	})
 	return results, violated
