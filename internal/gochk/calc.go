@@ -2,22 +2,23 @@ package gochk
 
 import "strings"
 
-func setResultType(results *[]CheckResult, dependencyOrders []string, path string) {
+func setResultType(results *[]CheckResult, dependencyOrders []string, path string) bool {
 	_, currentLayer := include(dependencyOrders, path)
 	dependencies, err := retrieveDependencies(dependencyOrders, path, currentLayer)
 	if err != nil {
 		*results = append([]CheckResult{CheckResult{resultType: warning, message: err.Error(), color: purple}}, *results...)
-		return
+		return false
 	}
 	if len(dependencies) == 0 {
 		*results = append([]CheckResult{CheckResult{resultType: none, message: path, color: teal}}, *results...)
-		return
+		return false
 	}
 	if violations := retrieveViolations(dependencyOrders, currentLayer, dependencies); len(violations) > 0 {
 		*results = append(*results, violations...)
-		return
+		return true
 	}
 	*results = append([]CheckResult{CheckResult{resultType: verified, message: path, color: green}}, *results...)
+	return false
 }
 
 func retrieveViolations(dependencyOrders []string, currentLayer int, dependencies []dependency) []CheckResult {

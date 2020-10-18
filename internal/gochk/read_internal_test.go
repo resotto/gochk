@@ -127,7 +127,7 @@ func TestCheck(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			results := Check(tt.cfg)
+			results, _ := Check(tt.cfg)
 			if len(results) != len(tt.expected) {
 				t.Errorf("got %d, want %d", len(results), len(tt.expected))
 			}

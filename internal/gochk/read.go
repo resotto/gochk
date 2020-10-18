@@ -54,7 +54,8 @@ func ParseConfig() Config {
 }
 
 // Check checks dependencies
-func Check(cfg Config) []CheckResult {
+func Check(cfg Config) ([]CheckResult, bool) {
+	violated := false
 	results := make([]CheckResult, 0, 1000)
 	filepath.Walk(cfg.TargetPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -68,10 +69,10 @@ func Check(cfg Config) []CheckResult {
 		if info.IsDir() || !strings.Contains(info.Name(), ".go") {
 			return nil
 		}
-		setResultType(&results, cfg.DependencyOrders, path)
+		violated = violated || setResultType(&results, cfg.DependencyOrders, path)
 		return nil
 	})
-	return results
+	return results, violated
 }
 
 func matchIgnore(ignorePaths []string, path string, info os.FileInfo) (bool, error) {

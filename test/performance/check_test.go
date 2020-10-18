@@ -99,7 +99,7 @@ func setup() {
 		}
 	}
 	end := time.Now()
-	fmt.Println("created all files in ", end.Sub(start))
+	fmt.Println("created all files for performance test in", end.Sub(start))
 }
 
 func teardown() {
@@ -109,7 +109,7 @@ func teardown() {
 	rmdir(applicationDirPath)
 	rmdir(domainDirPath)
 	end := time.Now()
-	fmt.Println("deleted all recursively in ", end.Sub(start))
+	fmt.Println("deleted all files for performance test recursively in", end.Sub(start))
 }
 
 func TestMain(m *testing.M) {

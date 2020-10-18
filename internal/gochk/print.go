@@ -19,14 +19,13 @@ const (
 )
 
 // Show prints results
-func Show(results []CheckResult, printViolationsAtTheBottom bool) {
-	violatesIncluded := false
+func Show(results []CheckResult, violated bool, printViolationsAtTheBottom bool) {
 	if printViolationsAtTheBottom {
-		violatesIncluded = printSequentially(results)
+		printSequentially(results)
 	} else {
-		violatesIncluded = printConcurrently(results)
+		printConcurrently(results)
 	}
-	if violatesIncluded {
+	if violated {
 		log.Fatal("Dependencies which violate dependency orders found!")
 	} else {
 		log.Print("No violations")
@@ -34,10 +33,8 @@ func Show(results []CheckResult, printViolationsAtTheBottom bool) {
 	}
 }
 
-func printConcurrently(results []CheckResult) bool {
+func printConcurrently(results []CheckResult) {
 	c := make(chan struct{}, 10)
-	buf := make(chan bool, 10)
-	buf <- false
 	var wg sync.WaitGroup
 	for _, r := range results {
 		r := r
@@ -46,31 +43,15 @@ func printConcurrently(results []CheckResult) bool {
 		go func() {
 			defer func() { <-c; wg.Done() }()
 			printColorMessage(r)
-			included := <-buf
-			if r.resultType == violated {
-				buf <- (included || true)
-			} else {
-				buf <- (included || false)
-			}
 		}()
 	}
 	wg.Wait()
-	violatesIncluded := <-buf
-	for len(buf) > 0 {
-		violatesIncluded = violatesIncluded || <-buf
-	}
-	return violatesIncluded
 }
 
-func printSequentially(results []CheckResult) bool {
-	violatesIncluded := false
+func printSequentially(results []CheckResult) {
 	for _, r := range results {
 		printColorMessage(r)
-		if !violatesIncluded && r.resultType == violated {
-			violatesIncluded = true
-		}
 	}
-	return violatesIncluded
 }
 
 func printColorMessage(cr CheckResult) {

@@ -12,6 +12,6 @@ func main() {
 	if flag.Arg(0) != "" {
 		config.TargetPath = flag.Arg(0)
 	}
-	results := gochk.Check(config)
-	gochk.Show(results, config.PrintViolationsAtTheBottom)
+	results, violated := gochk.Check(config)
+	gochk.Show(results, violated, config.PrintViolationsAtTheBottom)
 }
