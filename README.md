@@ -17,12 +17,13 @@
 What is gochk?
 
 - gochk checks for .go files' [Clean Architecture The Dependency Rule](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule) and prints its results.
+
   > This rule says that source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle.
 
 Why gochk?
 
-- ZERO Dependency (Only Standard Library)
-- Simple and Easy to Read Results
+- ZERO Dependency
+- Simple and Easy to Read Outputs
 
 ---
 
@@ -40,18 +41,25 @@ Why gochk?
 
 ```zsh
 go get -u github.com/resotto/gochk
+cd ${GOPATH}/src/github.com/resotto/gochk
 ```
 
-Please edit `dependencyOrders` in `gochk/configs/config.json` according to your dependency rule, whose smaller index value means outer circle.
+Please edit paths defined by `dependencyOrders` in `gochk/configs/config.json` according to your dependency rule, whose smaller index value means outer circle.
 
 ```json
 "dependencyOrders": ["external", "adapter", "application", "domain"],
 ```
 
-And then, let's gochk it!
+And then, let's gochk your target path!
 
 ```zsh
 go run cmd/gochk/main.go {CheckTargetPath}
+```
+
+If you have [Goilerplate](https://github.com/resotto/goilerplate), you can also gochk it like:
+
+```zsh
+go run cmd/gochk/main.go ../goilerplate
 ```
 
 ## How to use gochk
