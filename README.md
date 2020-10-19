@@ -1,11 +1,11 @@
-<h1 align="center">go chk</h1>
+<h1 align="center">gochk</h1>
 
 <p align="center">
   <a href="https://github.com/resotto/gochk/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-GPL%20v3.0-brightgreen.svg" /></a>
 </p>
 
 <p align="center">
-  Static Dependency Rule Analysis Tool for Go Files
+  Static Dependency Analysis Tool for Go Files
 </p>
 
 <p align="center">
@@ -23,7 +23,7 @@ What is gochk?
 Why gochk?
 
 - ZERO Dependency
-- Simple and Easy to Read Outputs
+- Simple & Easy-to-Read Outputs
 
 ---
 
@@ -32,10 +32,13 @@ Why gochk?
 - [Getting Started](#getting-started)
 - [How to use gochk](#how-to-use-gochk)
 - [How to see results](#how-to-see-results)
+- [Configuration](#configuration)
 - [Performance](#performance)
+- [Testing](#testing)
 - [Customization](#customization)
-- [](#)
-- [](#)
+- [Build](#build)
+- [Feedback](#feedback)
+- [License](#license)
 
 ## Getting Started
 
@@ -44,7 +47,7 @@ go get -u github.com/resotto/gochk
 cd ${GOPATH}/src/github.com/resotto/gochk
 ```
 
-Please edit paths defined by `dependencyOrders` in `gochk/configs/config.json` according to your dependency rule, whose smaller index value means outer circle.
+Please edit paths of `dependencyOrders` in `gochk/configs/config.json` according to your dependency rule, whose smaller index value means outer circle.
 
 ```json
 "dependencyOrders": ["external", "adapter", "application", "domain"],
@@ -53,10 +56,10 @@ Please edit paths defined by `dependencyOrders` in `gochk/configs/config.json` a
 And then, let's gochk your target path!
 
 ```zsh
-go run cmd/gochk/main.go {CheckTargetPath}
+go run cmd/gochk/main.go {YourTargetPath}
 ```
 
-If you have [Goilerplate](https://github.com/resotto/goilerplate), you can also gochk it like:
+If you have [Goilerplate](https://github.com/resotto/goilerplate), you can also gochk it:
 
 ```zsh
 go run cmd/gochk/main.go ../goilerplate
@@ -66,9 +69,380 @@ go run cmd/gochk/main.go ../goilerplate
 
 ## How to see results
 
-## Performance
+### Quick Check
+
+You can check whether there are violations or not quickly by looking at the end of results.
+
+If you see `exit status 1`, there are violations!🚨
+
+```
+2020/10/19 23:37:03 Dependencies which violate dependency orders found!
+exit status 1
+```
+
+If you see the following AA, congrats! there are no violations🎉
+
+```
+2020/10/19 23:57:25 No violations
+    ________     _______       ______    __     __    __   _ _
+   /  ______\   /  ___  \     /  ____\  |  |   |  |  |  | /   /
+  /  /  ____   /  /   \  \   /  /       |  |___|  |  |  |/   /
+ /  /  |_   | |  |     |  | |  |        |   ___   |  |      /
+ \  \    \  | |  |     |  | |  |        |  |   |  |  |  |\  \
+  \  \___/  /  \  \___/  /   \  \_____  |  |   |  |  |  | \  \
+   \_______/    \_______/     \_______\ |__|   |__|  |__|  \__\
+```
+
+### Result types
+
+gochk displays each result type in a different color by default:
+
+- ![#008080](https://via.placeholder.com/15/008080/000000?text=+) None
+  - which means no dependencies (no imports).
+- ![#008000](https://via.placeholder.com/15/008000/000000?text=+) Verified
+  - which means there are dependencies with no violation.
+- ![#FFFF00](https://via.placeholder.com/15/FFFF00/000000?text=+) Ignored
+  - which means the path is ignored (not checked).
+- ![#800080](https://via.placeholder.com/15/800080/000000?text=+) Warning
+  - which means something happened (and gochk doesn't check it).
+- ![#FF0000](https://via.placeholder.com/15/FF0000/000000?text=+) Violated
+  - which means there are dependencies which violates dependency rule.
+
+For `none`, `verified`, and `ignored`, only the file path will be displayed.
+
+```
+[None]     ../goilerplate/internal/app/adapter/postgresql/conn.go
+```
+
+```
+[Verified] ../goilerplate/cmd/app/main.go
+```
+
+```
+[Ignored]  ../goilerplate/.git
+```
+
+For `warning`, it displays what happened to the file.
+
+```
+[Warning]  open /Users/resotto/go/src/github.com/resotto/goilerplate/internal/app/application/usecase/lock.go: permission denied
+```
+
+For `violated`, it displays the file path, its dependency, and how it violates dependency rule.
+
+```
+[Violated] ../goilerplate/internal/app/domain/temp.go imports "github.com/resotto/goilerplate/internal/app/adapter/postgresql/model"
+ => domain depends on adapter
+```
+
+## Configuration
+
+### Note
+
+_Please run gochk from root directory_ because the absolute path is specified in `ParseConfig()` in order to retrieve `config.json`.
+
+```go
+// read.go
+func ParseConfig() Config {
+	absPath, _ := filepath.Abs("configs/config.json") // NOTICE: from root directory
+  // omitted
+}
+```
+
+### Setting Values
+
+`gochk/configs/config.json` has configuration values.
+
+```json
+{
+  "targetPath": ".",
+  "dependencyOrders": ["external", "adapter", "application", "domain"],
+  "ignore": ["test", "_test", ".git"],
+  "printViolationsAtTheBottom": false
+}
+```
+
+- `targetPath` is default check target path.
+
+  - If you specify this parameter, you don't have to pass target path via command line argument like:
+
+    ```zsh
+    go run cmd/gochk/main.go
+    ```
+
+- `dependencyOrders` are the paths of each circles in Clean Architecture.
+
+  - For example, if you have following four circles, you should specify them from the outer to the inner like: `["external", "adapter", "application", "domain"]`.
+
+    - "External" (most outer)
+    - "Adapter"
+    - "Application"
+    - "Domain" (most inner, the core)
+
+  - If you have other layered architecture, you could specify its layers to this parameter as well.
+
+- `ignore` has the paths ignored by gochk, which can be file path or dir path.
+
+  - If you have the directory you want to ignore, **specifing them improve the performance of gochk since it returns `filepath.SkipDir`**.
+
+    ```go
+    // read.go
+    func matchIgnore(ignorePaths []string, path string, info os.FileInfo) (bool, error) {
+      if included, _ := include(ignorePaths, path); included {
+        if info.IsDir() {
+          return true, filepath.SkipDir // HERE
+        }
+        return true, nil
+      }
+      return false, nil
+    }
+    ```
+
+- `printViolationsAtTheBottom` is the flag whether gochk prints violations of the dependency rule at the bottom or not.
+
+  - If `true`, you can see violations at the bottom like:
+  <p align="center">
+    <img src="https://user-images.githubusercontent.com/19743841/96462260-58beed00-1260-11eb-8459-4938d184cb37.gif">
+  </p>
+
+  - If `false`, you see them disorderly (by goroutine):
+  <p align="center">
+    <img src="https://user-images.githubusercontent.com/19743841/96462316-670d0900-1260-11eb-9b3c-882a3f7adf93.gif">
+  </p>
+
+## Unit Testing
+
+Unit test files are placed in `gochk/internal/gochk`.
+
+```zsh
+├── internal
+│   └── gochk
+│       ├── calc_internal_test.go # Unit test (internal)
+│       └── read_internal_test.go # Unit test (internal)
+└── test
+    └── data                      # Test data
+```
+
+So you can do unit test like:
+
+```zsh
+cd internal/gochk
+```
+
+```zsh
+~/go/src/github.com/resotto/gochk/internal/gochk (master) > go test ./... # Please specify -v if you need detailed outputs
+ok      github.com/resotto/gochk/internal/gochk (cached)
+```
+
+You can also clean test cache with `go clean -testcache`.
+
+```zsh
+~/go/src/github.com/resotto/gochk/internal/gochk (master) > go clean -testcache
+~/go/src/github.com/resotto/gochk/internal/gochk (master) > go test ./...
+ok      github.com/resotto/gochk/internal/gochk 0.065s # Not cache
+```
+
+## Performance Test
+
+Performance test file is placed in `gochk/test/performance`.
+
+```zsh
+gochk
+└── test
+    └── performance
+        └── check_test.go   # Performance test
+```
+
+Thus, you can do performance test as follows. It will take few minutes.
+
+```zsh
+cd test/performance
+```
+
+```zsh
+~/go/src/github.com/resotto/gochk/test/performance (master) > go test ./...
+ok      github.com/resotto/gochk/test/performance       64.661s
+```
+
+### Test Contents
+
+Performance test checks 40,000 test files in `gochk/test/performance` and measures only how long it takes to do it.
+
+Note
+
+- Test files will be created before the test and be deleted after the test.
+- For each test directory, there will be 10,000 .go test files.
+
+```zsh
+gochk
+└── test
+    ├── data
+    │   ├── adapter.txt     # original file of performance/adapter/gX.go
+    │   ├── application.txt # original file of performance/application/gX.go
+    │   ├── domain.txt      # original file of performance/domain/gX.go
+    │   └── external.txt    # original file of performance/external/gX.go
+    └── performance
+        ├── adapter         # Test directory
+        │   ├── postgresql
+        │   │   └── model
+        │   ├── repository
+        │   ├── service
+        │   ├── view
+        │   ...             # Test files (g0.go ~ g9999.go)
+        ├── application     # Test directory
+        │   ├── service
+        │   ├── usecase
+        │   ...             # Test files (g0.go ~ g9999.go)
+        ├── domain          # Test directory
+        │   ├── factory
+        │   ├── repository
+        │   ├── valueobject
+        │   ...             # Test files (g0.go ~ g9999.go)
+        └── external        # Test directory
+            ...             # Test files (g0.go ~ g9999.go)
+
+```
+
+For each file, it imports standard libraries and dependencies like:
+
+```go
+package xxx
+
+import (
+    // standard library imports omitted here
+
+    "github.com/resotto/gochk/test/performance/adapter"                         // import this up to adapter
+    "github.com/resotto/gochk/test/performance/adapter/postgresql"              // import this up to adapter
+    "github.com/resotto/gochk/test/performance/adapter/postgresql/model"        // import this up to adapter
+    "github.com/resotto/gochk/test/performance/adapter/repository"              // import this up to adapter
+    "github.com/resotto/gochk/test/performance/adapter/service"                 // import this up to adapter
+    "github.com/resotto/gochk/test/performance/adapter/view"                    // import this up to adapter
+    "github.com/resotto/gochk/test/performance/application/service"             // import this up to application
+    "github.com/resotimport this to/gochk/test/performance/application/usecase" // import this up to application
+    "github.com/resotto/gochk/test/performance/domain/factory"                  // import this in only domain
+    "github.com/resotto/gochk/test/performance/domain/repository"               // import this in only domain
+    "github.com/resotto/gochk/test/performance/domain/valueobject"              // import this in only domain
+    "github.com/resotto/gochk/test/performance/external"                        // import this up to adapter
+)
+```
+
+In performance test, `dependencyOrders` are:
+
+```go
+var (
+	dependencyOrders = []string{"external", "adapter", "application", "domain"}
+)
+```
+
+So, the number of violations equals to:
+
+- domain
+  - there are 9 violations x 10,000 files = 90,000
+    - domain depends on application (x2)
+      ```go
+      "github.com/resotto/gochk/test/performance/application/service"
+      "github.com/resotto/gochk/test/performance/application/usecase"
+      ```
+    - domain depends on adapter (x6)
+      ```go
+      "github.com/resotto/gochk/test/performance/adapter"
+      "github.com/resotto/gochk/test/performance/adapter/postgresql"
+      "github.com/resotto/gochk/test/performance/adapter/postgresql/model"
+      "github.com/resotto/gochk/test/performance/adapter/repository"
+      "github.com/resotto/gochk/test/performance/adapter/service"
+      "github.com/resotto/gochk/test/performance/adapter/view"
+      ```
+    - domain depends on external (x1)
+      ```go
+      "github.com/resotto/gochk/test/performance/external"
+      ```
+- application
+  - there are 7 violations x 10,000 files = 70,000
+    - application depends on adapter (x6)
+      ```go
+      "github.com/resotto/gochk/test/performance/adapter"
+      "github.com/resotto/gochk/test/performance/adapter/postgresql"
+      "github.com/resotto/gochk/test/performance/adapter/postgresql/model"
+      "github.com/resotto/gochk/test/performance/adapter/repository"
+      "github.com/resotto/gochk/test/performance/adapter/service"
+      "github.com/resotto/gochk/test/performance/adapter/view"
+      ```
+    - application depends on external (x1)
+      ```go
+      "github.com/resotto/gochk/test/performance/external"
+      ```
+- adapter
+
+  - there is 1 violation x 10,000 files = 10,000
+    - adapter depends on external (x1)
+      ```go
+      "github.com/resotto/gochk/test/performance/external"
+      ```
+
+- external
+  - there are no violations.
+- Total
+  - 90,000 (domain) + 70,000 (application) + 10,000 (adapter) = 170,000 violations
+
+### Score
+
+Following scores are not cached ones and measured by Two Macbook Pro whose spec is different.
+
+| CPU                             | RAM                    | 1st score | 2nd score | 3rd score | Average    |
+| :------------------------------ | :--------------------- | :-------- | :-------- | :-------- | :--------- |
+| 2.7 GHz Dual-Core Intel Core i5 | 8 GB 1867 MHz DDR3     | 90.43s    | 91.23s    | 88.84s    | **90.17s** |
+| 2 GHz Quad-Core Intel Core i5   | 32 GB 3733 MHz LPDDR4X | 54.97s    | 54.03s    | 50.60s    | **53.2s**  |
 
 ## Customization
+
+### Changing Result Color
+
+First, please add the ANSI escape code to print.go:
+
+```go
+const (
+	teal     color = "\033[1;36m"
+	green          = "\033[1;32m"
+	yellow         = "\033[1;33m"
+	purple         = "\033[1;35m"
+	red            = "\033[1;31m"
+	newColor       = "\033[1;34m" // New color
+	reset          = "\033[0m"
+)
+```
+
+And then, let's change color of result type in `Check()` in read.go or `setResultType()` in calc.go:
+
+```go
+results = append([]CheckResult{CheckResult{
+  resultType: warning,
+  message: err.Error(),
+  color: newColor // HERE
+}}, results...)
+```
+
+### Tuning the number of goroutine
+
+If `printViolationsAtTheBottom` is `false`, gochk prints results with goroutine.
+
+You can change the number of goroutine in print.go:
+
+```go
+func printConcurrently(results []CheckResult) {
+	c := make(chan struct{}, 10) // 10 goroutines by default
+	var wg sync.WaitGroup
+	for _, r := range results {
+		r := r
+		c <- struct{}{}
+		wg.Add(1)
+		go func() {
+			defer func() { <-c; wg.Done() }()
+			printColorMessage(r)
+		}()
+	}
+	wg.Wait()
+}
+```
 
 ## Build
 
