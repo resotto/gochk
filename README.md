@@ -31,6 +31,7 @@ Why gochk?
 
 - [Getting Started](#getting-started)
 - [How to use gochk](#how-to-use-gochk)
+- [Configuration](#configuration)
 - [How to see results](#how-to-see-results)
 - [Configuration](#configuration)
 - [Performance](#performance)
@@ -392,6 +393,53 @@ Following scores are not cached ones and measured by Two Macbook Pro whose spec 
 | :------------------------------ | :--------------------- | :-------- | :-------- | :-------- | :--------- |
 | 2.7 GHz Dual-Core Intel Core i5 | 8 GB 1867 MHz DDR3     | 90.43s    | 91.23s    | 88.84s    | **90.17s** |
 | 2 GHz Quad-Core Intel Core i5   | 32 GB 3733 MHz LPDDR4X | 54.97s    | 54.03s    | 50.60s    | **53.2s**  |
+
+## Testing
+
+### Test Package Structure
+
+```zsh
+├── internal
+│   └── gochk
+│       ├── calc_internal_test.go # Unit test (internal)
+│       └── read_internal_test.go # Unit test (internal)
+└── test
+    ├── data                      # Test data
+    └── performance
+        └── check_test.go         # Performance test
+```
+
+### Unit Test
+
+```zsh
+cd internal
+```
+
+```zsh
+~/go/src/github.com/resotto/gochk/internal/gochk (master) > go test ./... # Please specify -v if you need detailed outputs
+ok      github.com/resotto/gochk/internal/gochk (cached)
+```
+
+You can also clean test cache with `go clean -testcache`.
+
+```zsh
+~/go/src/github.com/resotto/gochk/internal/gochk (master) > go clean -testcache
+~/go/src/github.com/resotto/gochk/internal/gochk (master) > go test ./...
+ok      github.com/resotto/gochk/internal/gochk 0.065s # Not cache
+```
+
+### Performance Test
+
+Performance test will take few minutes.
+
+```zsh
+cd test/performance
+```
+
+```zsh
+~/go/src/github.com/resotto/gochk/test/performance (master) > go test ./...
+ok      github.com/resotto/gochk/test/performance       64.661s
+```
 
 ## Customization
 
