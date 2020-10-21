@@ -16,7 +16,7 @@
 
 What is gochk?
 
-- gochk checks for .go files' [Clean Architecture The Dependency Rule](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule) and prints its results.
+- gochk checks whether .go files violate [Clean Architecture The Dependency Rule](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule) or not, and prints its results.
 
   > This rule says that source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle.
 
@@ -30,7 +30,7 @@ Why gochk?
 ## Table of Contents
 
 - [Getting Started](#getting-started)
-- [How to use gochk](#how-to-use-gochk)
+- [How gochk works](#how-gochk-works)
 - [How to see results](#how-to-see-results)
 - [Configuration](#configuration)
 - [Unit Testing](#unit-testing)
@@ -65,7 +65,39 @@ If you have [Goilerplate](https://github.com/resotto/goilerplate), you can also 
 go run cmd/gochk/main.go ../goilerplate
 ```
 
-## How to use gochk
+## How gochk works
+
+### Prerequisites
+
+- **Please run `go fmt` for all .go files in advance**.
+- If you have files with following file / import path, gochk might not work well.
+  - The path including the two directory name specified in `dependencyOrders` in `gochk/configs/config.json`.
+    - For example, if you have the path `app/external/adapter/service/` and want to handle this path as what is in `adapter` and `dependencyOrders = ["external", "adapter"]`, the index of the path will be `0 (external)`.
+
+### What gochk does
+
+gochk checks whether .go files violate [Clean Architecture The Dependency Rule](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule) or not, and prints its results.
+
+> This rule says that source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle.
+
+For example, if an usecase in "Use Cases" imports (depends on) what is in "Controllers/Gateways/Presenters", it violates dependency rule.
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/19743841/93830264-afa9c480-fcaa-11ea-9589-7c5308c291f4.jpg">
+</p>
+<p align="center">
+  <a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html">The Clean Architecture</a>
+</p>
+
+### Check Logic
+
+Firstly, gochk fetchs the file path and gets index of `dependencyOrders` in `gochk/configs/config.json` if the file path is included in them.
+
+Second, gochk reads the file, parses imports of the file, and also gets index of `dependencyOrders` if matched.
+
+And then, gochk compares those indices and detects violation **if the index of the import is smaller than that of the file path**.
+
+For example, if you have a file `app/application/usecase/xxx.go` with import `"app/adapter/service"` and `dependencyOrders = ["adapter", "application"]`, the index of the file is `1` and the index of its import is `0` so that the file violates dependency rule since the inequality `1 (index of file path) > 0 (index of import)` is established.
 
 ## How to see results
 
@@ -145,7 +177,7 @@ _Please run gochk from root directory_ because the absolute path is specified in
 // read.go
 func ParseConfig() Config {
 	absPath, _ := filepath.Abs("configs/config.json") // NOTICE: from root directory
-  // omitted
+	// omitted
 }
 ```
 
@@ -414,11 +446,7 @@ const (
 And then, let's change color of result type in `Check()` in read.go or `setResultType()` in calc.go:
 
 ```go
-results = append([]CheckResult{CheckResult{
-  resultType: warning,
-  message: err.Error(),
-  color: newColor // HERE
-}}, results...)
+results = append([]CheckResult{CheckResult{resultType: warning, message: err.Error(), color: newColor /* HERE */ }}, results...)
 ```
 
 ### Tuning the number of goroutine
