@@ -69,7 +69,10 @@ go run cmd/gochk/main.go ../goilerplate
 
 ### Prerequisites
 
-- **Please run `go fmt` for all .go files in advance**.
+- **Please format all .go files with one of the following format tools in advance**.
+  - goimports
+  - goreturns
+  - gofumports
 - If you have files with following file / import path, gochk might not work well.
   - The path including the two directory name specified in `dependencyOrders` in `gochk/configs/config.json`.
     - For example, if you have the path `app/external/adapter/service/` and want to handle this path as what is in `adapter` and `dependencyOrders = ["external", "adapter"]`, the index of the path will be `0 (external)`.
@@ -217,18 +220,18 @@ func ParseConfig() Config {
 
   - If you have the directory you want to ignore, **specifing them improve the performance of gochk since it returns `filepath.SkipDir`**.
 
-    ```go
-    // read.go
-    func matchIgnore(ignorePaths []string, path string, info os.FileInfo) (bool, error) {
-      if included, _ := include(ignorePaths, path); included {
-        if info.IsDir() {
-          return true, filepath.SkipDir // HERE
-        }
-        return true, nil
-      }
-      return false, nil
-    }
-    ```
+```go
+// read.go
+func matchIgnore(ignorePaths []string, path string, info os.FileInfo) (bool, error) {
+	if included, _ := include(ignorePaths, path); included {
+		if info.IsDir() {
+			return true, filepath.SkipDir
+		}
+		return true, nil
+	}
+	return false, nil
+}
+```
 
 - `printViolationsAtTheBottom` is the flag whether gochk prints violations of the dependency rule at the bottom or not.
 
@@ -361,9 +364,7 @@ import (
 In performance test, `dependencyOrders` are:
 
 ```go
-var (
-	dependencyOrders = []string{"external", "adapter", "application", "domain"}
-)
+var dependencyOrders = []string{"external", "adapter", "application", "domain"}
 ```
 
 So, the number of violations equals to:

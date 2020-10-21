@@ -34,9 +34,7 @@ const (
 	domainTxtPath      = "../data/domain.txt"
 )
 
-var (
-	dependencyOrders = []string{"external", "adapter", "application", "domain"}
-)
+var dependencyOrders = []string{"external", "adapter", "application", "domain"}
 
 func createFile(path string, contentsPath string) {
 	contentsFilepath, _ := filepath.Abs(contentsPath)
