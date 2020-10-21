@@ -279,7 +279,7 @@ ok      github.com/resotto/gochk/internal/gochk 0.065s # Not cache
 
 ## Performance Test
 
-Performance test file is placed in `gochk/test/performance`.
+Performance test file is placed in `gochk/test/testdata/performance`.
 
 ```zsh
 gochk
@@ -295,13 +295,13 @@ cd test/performance
 ```
 
 ```zsh
-~/go/src/github.com/resotto/gochk/test/performance (master) > go test ./...
-ok      github.com/resotto/gochk/test/performance       64.661s
+~/go/src/github.com/resotto/gochk/test/testdata/performance (master) > go test ./...
+ok      github.com/resotto/gochk/test/testdata/performance       64.661s
 ```
 
 ### Test Contents
 
-Performance test checks 40,000 test files in `gochk/test/performance` and measures only how long it takes to do it.
+Performance test checks 40,000 test files in `gochk/test/testdata/performance` and measures only how long it takes to do it.
 
 #### Note
 
@@ -346,18 +346,18 @@ package xxx
 import (
     // standard library imports omitted here
 
-    "github.com/resotto/gochk/test/performance/adapter"                         // import this up to adapter
-    "github.com/resotto/gochk/test/performance/adapter/postgresql"              // import this up to adapter
-    "github.com/resotto/gochk/test/performance/adapter/postgresql/model"        // import this up to adapter
-    "github.com/resotto/gochk/test/performance/adapter/repository"              // import this up to adapter
-    "github.com/resotto/gochk/test/performance/adapter/service"                 // import this up to adapter
-    "github.com/resotto/gochk/test/performance/adapter/view"                    // import this up to adapter
-    "github.com/resotto/gochk/test/performance/application/service"             // import this up to application
-    "github.com/resotimport this to/gochk/test/performance/application/usecase" // import this up to application
-    "github.com/resotto/gochk/test/performance/domain/factory"                  // import this in only domain
-    "github.com/resotto/gochk/test/performance/domain/repository"               // import this in only domain
-    "github.com/resotto/gochk/test/performance/domain/valueobject"              // import this in only domain
-    "github.com/resotto/gochk/test/performance/external"                        // import this up to adapter
+    "github.com/resotto/gochk/test/testdata/performance/adapter"                         // import this up to adapter
+    "github.com/resotto/gochk/test/testdata/performance/adapter/postgresql"              // import this up to adapter
+    "github.com/resotto/gochk/test/testdata/performance/adapter/postgresql/model"        // import this up to adapter
+    "github.com/resotto/gochk/test/testdata/performance/adapter/repository"              // import this up to adapter
+    "github.com/resotto/gochk/test/testdata/performance/adapter/service"                 // import this up to adapter
+    "github.com/resotto/gochk/test/testdata/performance/adapter/view"                    // import this up to adapter
+    "github.com/resotto/gochk/test/testdata/performance/application/service"             // import this up to application
+    "github.com/resotto/gochk/test/testdata/performance/application/usecase" // import this up to application
+    "github.com/resotto/gochk/test/testdata/performance/domain/factory"                  // import this in only domain
+    "github.com/resotto/gochk/test/testdata/performance/domain/repository"               // import this in only domain
+    "github.com/resotto/gochk/test/testdata/performance/domain/valueobject"              // import this in only domain
+    "github.com/resotto/gochk/test/testdata/performance/external"                        // import this up to adapter
 )
 ```
 
@@ -373,43 +373,43 @@ So, the number of violations equals to:
   - there are 9 violations x 10,000 files = 90,000
     - domain depends on application (x2)
       ```go
-      "github.com/resotto/gochk/test/performance/application/service"
-      "github.com/resotto/gochk/test/performance/application/usecase"
+      "github.com/resotto/gochk/test/testdata/performance/application/service"
+      "github.com/resotto/gochk/test/testdata/performance/application/usecase"
       ```
     - domain depends on adapter (x6)
       ```go
-      "github.com/resotto/gochk/test/performance/adapter"
-      "github.com/resotto/gochk/test/performance/adapter/postgresql"
-      "github.com/resotto/gochk/test/performance/adapter/postgresql/model"
-      "github.com/resotto/gochk/test/performance/adapter/repository"
-      "github.com/resotto/gochk/test/performance/adapter/service"
-      "github.com/resotto/gochk/test/performance/adapter/view"
+      "github.com/resotto/gochk/test/testdata/performance/adapter"
+      "github.com/resotto/gochk/test/testdata/performance/adapter/postgresql"
+      "github.com/resotto/gochk/test/testdata/performance/adapter/postgresql/model"
+      "github.com/resotto/gochk/test/testdata/performance/adapter/repository"
+      "github.com/resotto/gochk/test/testdata/performance/adapter/service"
+      "github.com/resotto/gochk/test/testdata/performance/adapter/view"
       ```
     - domain depends on external (x1)
       ```go
-      "github.com/resotto/gochk/test/performance/external"
+      "github.com/resotto/gochk/test/testdata/performance/external"
       ```
 - application
   - there are 7 violations x 10,000 files = 70,000
     - application depends on adapter (x6)
       ```go
-      "github.com/resotto/gochk/test/performance/adapter"
-      "github.com/resotto/gochk/test/performance/adapter/postgresql"
-      "github.com/resotto/gochk/test/performance/adapter/postgresql/model"
-      "github.com/resotto/gochk/test/performance/adapter/repository"
-      "github.com/resotto/gochk/test/performance/adapter/service"
-      "github.com/resotto/gochk/test/performance/adapter/view"
+      "github.com/resotto/gochk/test/testdata/performance/adapter"
+      "github.com/resotto/gochk/test/testdata/performance/adapter/postgresql"
+      "github.com/resotto/gochk/test/testdata/performance/adapter/postgresql/model"
+      "github.com/resotto/gochk/test/testdata/performance/adapter/repository"
+      "github.com/resotto/gochk/test/testdata/performance/adapter/service"
+      "github.com/resotto/gochk/test/testdata/performance/adapter/view"
       ```
     - application depends on external (x1)
       ```go
-      "github.com/resotto/gochk/test/performance/external"
+      "github.com/resotto/gochk/test/testdata/performance/external"
       ```
 - adapter
 
   - there is 1 violation x 10,000 files = 10,000
     - adapter depends on external (x1)
       ```go
-      "github.com/resotto/gochk/test/performance/external"
+      "github.com/resotto/gochk/test/testdata/performance/external"
       ```
 
 - external

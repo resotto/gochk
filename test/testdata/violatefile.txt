@@ -1,6 +1,6 @@
 package application
 
-import "github.com/resotto/gochk/test/data/adapter"
+import "github.com/resotto/gochk/test/testdata/adapter"
 
 var (
     violated = adapter.Third{}

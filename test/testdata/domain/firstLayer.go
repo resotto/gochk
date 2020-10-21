@@ -1,8 +1,8 @@
 package domain
 
 import (
-	"github.com/resotto/gochk/test/data/adapter"
-	"github.com/resotto/gochk/test/data/application"
+	"github.com/resotto/gochk/test/testdata/adapter"
+	"github.com/resotto/gochk/test/testdata/application"
 )
 
 // First is type for tests

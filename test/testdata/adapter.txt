@@ -1,4 +1,4 @@
-package application
+package adapter
 
 import (
     "archive/tar"
@@ -149,13 +149,11 @@ import (
     "unicode/utf8"
     "unsafe"
 
-    "github.com/resotto/gochk/test/performance/adapter"
-    "github.com/resotto/gochk/test/performance/adapter/postgresql"
-    "github.com/resotto/gochk/test/performance/adapter/postgresql/model"
-    "github.com/resotto/gochk/test/performance/adapter/repository"
-    "github.com/resotto/gochk/test/performance/adapter/service"
-    "github.com/resotto/gochk/test/performance/adapter/view"
-    "github.com/resotto/gochk/test/performance/application/service"
-    "github.com/resotto/gochk/test/performance/application/usecase"
-    "github.com/resotto/gochk/test/performance/external"
+    "github.com/resotto/gochk/test/testdataperformance/adapter"
+    "github.com/resotto/gochk/test/testdataperformance/adapter/postgresql"
+    "github.com/resotto/gochk/test/testdataperformance/adapter/postgresql/model"
+    "github.com/resotto/gochk/test/testdataperformance/adapter/repository"
+    "github.com/resotto/gochk/test/testdataperformance/adapter/service"
+    "github.com/resotto/gochk/test/testdataperformance/adapter/view"
+    "github.com/resotto/gochk/test/testdataperformance/external"
 )

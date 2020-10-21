@@ -1,6 +1,6 @@
 package external
 
-import "github.com/resotto/gochk/test/data/domain"
+import "github.com/resotto/gochk/test/testdata/domain"
 
 // Fourth is type for tests
 type Fourth struct{}

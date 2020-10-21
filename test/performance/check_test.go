@@ -13,25 +13,25 @@ import (
 )
 
 const (
-	externalDirPath           = "../performance/external"
-	adapterDirPath            = "../performance/adapter"
-	postgresqlDirPath         = "../performance/adapter/postgresql"
-	modelDirPath              = "../performance/adapter/postgresql/model"
-	adapterRepositoryDirPath  = "../performance/adapter/repository"
-	adapterServiceDirPath     = "../performance/adapter/service"
-	viewDirPath               = "../performance/adapter/view"
-	applicationDirPath        = "../performance/application"
-	applicationServiceDirPath = "../performance/application/service"
-	usecaseDirPath            = "../performance/application/usecase"
-	domainDirPath             = "../performance/domain"
-	factoryDirPath            = "../performance/domain/factory"
-	domainRepositoryDirPath   = "../performance/domain/repository"
-	valueobjectDirPath        = "../performance/domain/valueobject"
+	externalDirPath           = "./external"
+	adapterDirPath            = "./adapter"
+	postgresqlDirPath         = "./adapter/postgresql"
+	modelDirPath              = "./adapter/postgresql/model"
+	adapterRepositoryDirPath  = "./adapter/repository"
+	adapterServiceDirPath     = "./adapter/service"
+	viewDirPath               = "./adapter/view"
+	applicationDirPath        = "./application"
+	applicationServiceDirPath = "./application/service"
+	usecaseDirPath            = "./application/usecase"
+	domainDirPath             = "./domain"
+	factoryDirPath            = "./domain/factory"
+	domainRepositoryDirPath   = "./domain/repository"
+	valueobjectDirPath        = "./domain/valueobject"
 
-	externalTxtPath    = "../data/external.txt"
-	adapterTxtPath     = "../data/adapter.txt"
-	applicationTxtPath = "../data/application.txt"
-	domainTxtPath      = "../data/domain.txt"
+	externalTxtPath    = "../testdata/external.txt"
+	adapterTxtPath     = "../testdata/adapter.txt"
+	applicationTxtPath = "../testdata/application.txt"
+	domainTxtPath      = "../testdata/domain.txt"
 )
 
 var dependencyOrders = []string{"external", "adapter", "application", "domain"}
