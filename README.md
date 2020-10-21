@@ -56,7 +56,7 @@ Please edit paths of `dependencyOrders` in `gochk/configs/config.json` according
 And then, let's gochk your target path!
 
 ```zsh
-go run cmd/gochk/main.go {YourTargetPath}
+go run cmd/gochk/main.go ${YourTargetPath}
 ```
 
 If you have [Goilerplate](https://github.com/resotto/goilerplate), you can also gochk it:
@@ -69,13 +69,13 @@ go run cmd/gochk/main.go ../goilerplate
 
 ### Prerequisites
 
-- **Please format all .go files with one of the following format tools in advance**.
+- **Please format all .go files with one of the following format tools in advance, which means only one import statement in .go file**.
   - goimports
   - goreturns
   - gofumports
 - If you have files with following file / import path, gochk might not work well.
   - The path including the two directory name specified in `dependencyOrders` in `gochk/configs/config.json`.
-    - For example, if you have the path `app/external/adapter/service/` and want to handle this path as what is in `adapter` and `dependencyOrders = ["external", "adapter"]`, the index of the path will be `0 (external)`.
+    - For example, if you have the path `app/external/adapter/service` and want to handle this path as what is in `adapter`, and `dependencyOrders = ["external", "adapter"]`, the index of the path will be `0 (external)`.
 
 ### What gochk does
 
@@ -94,7 +94,7 @@ For example, if an usecase in "Use Cases" imports (depends on) what is in "Contr
 
 ### Check Logic
 
-Firstly, gochk fetchs the file path and gets index of `dependencyOrders` in `gochk/configs/config.json` if the file path is included in them.
+Firstly, gochk fetchs the file path and gets index of `dependencyOrders` in `gochk/configs/config.json` if they are included in the file path.
 
 Second, gochk reads the file, parses imports of the file, and also gets index of `dependencyOrders` if matched.
 
@@ -133,7 +133,7 @@ If you see the following AA, congrats! there are no violations🎉
 gochk displays each result type in a different color by default:
 
 - ![#008080](https://via.placeholder.com/15/008080/000000?text=+) None
-  - which means no dependencies (no imports).
+  - which means there are imports irrelevant to dependency rule or no imports at all
 - ![#008000](https://via.placeholder.com/15/008000/000000?text=+) Verified
   - which means there are dependencies with no violation.
 - ![#FFFF00](https://via.placeholder.com/15/FFFF00/000000?text=+) Ignored
@@ -143,7 +143,7 @@ gochk displays each result type in a different color by default:
 - ![#FF0000](https://via.placeholder.com/15/FF0000/000000?text=+) Violated
   - which means there are dependencies which violates dependency rule.
 
-For `none`, `verified`, and `ignored`, only the file path will be displayed.
+For `None`, `Verified`, and `Ignored`, only the file path will be displayed.
 
 ```
 [None]     ../goilerplate/internal/app/adapter/postgresql/conn.go
@@ -157,13 +157,13 @@ For `none`, `verified`, and `ignored`, only the file path will be displayed.
 [Ignored]  ../goilerplate/.git
 ```
 
-For `warning`, it displays what happened to the file.
+For `Warning`, it displays what happened to the file.
 
 ```
 [Warning]  open /Users/resotto/go/src/github.com/resotto/goilerplate/internal/app/application/usecase/lock.go: permission denied
 ```
 
-For `violated`, it displays the file path, its dependency, and how it violates dependency rule.
+For `Violated`, it displays the file path, its dependency, and how it violates dependency rule.
 
 ```
 [Violated] ../goilerplate/internal/app/domain/temp.go imports "github.com/resotto/goilerplate/internal/app/adapter/postgresql/model"
@@ -172,7 +172,7 @@ For `violated`, it displays the file path, its dependency, and how it violates d
 
 ## Configuration
 
-### Note
+### Notice
 
 _Please run gochk from root directory_ because the absolute path is specified in `ParseConfig()` in order to retrieve `config.json`.
 
@@ -303,7 +303,7 @@ ok      github.com/resotto/gochk/test/performance       64.661s
 
 Performance test checks 40,000 test files in `gochk/test/performance` and measures only how long it takes to do it.
 
-Note
+#### Note
 
 - Test files will be created before the test and be deleted after the test.
 - For each test directory, there will be 10,000 .go test files.
@@ -419,7 +419,7 @@ So, the number of violations equals to:
 
 ### Score
 
-Following scores are not cached ones and measured by Two Macbook Pro whose spec is different.
+Following scores are not cached ones and measured by two Macbook Pros whose spec is different.
 
 | CPU                             | RAM                    | 1st score | 2nd score | 3rd score | Average    |
 | :------------------------------ | :--------------------- | :-------- | :-------- | :-------- | :--------- |
