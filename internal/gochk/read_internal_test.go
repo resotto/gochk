@@ -96,14 +96,15 @@ func TestMain(m *testing.M) {
 
 func TestCheck(t *testing.T) {
 	tests := []struct {
-		name     string
-		cfg      Config
-		expected []CheckResult
+		name       string
+		targetPath string
+		cfg        Config
+		expected   []CheckResult
 	}{
 		{
 			"violation found",
+			violatePath,
 			Config{
-				TargetPath:                 violatePath,
 				DependencyOrders:           dependencyOrders,
 				Ignore:                     []string{},
 				PrintViolationsAtTheBottom: true,
@@ -114,8 +115,8 @@ func TestCheck(t *testing.T) {
 		},
 		{
 			"no results",
+			violatefilePath,
 			Config{
-				TargetPath:                 violatefilePath,
 				DependencyOrders:           dependencyOrders,
 				Ignore:                     []string{},
 				PrintViolationsAtTheBottom: true,
@@ -127,7 +128,7 @@ func TestCheck(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			results, _ := Check(tt.cfg)
+			results, _ := Check(tt.targetPath, tt.cfg)
 			if len(results) != len(tt.expected) {
 				t.Errorf("got %d, want %d", len(results), len(tt.expected))
 			}

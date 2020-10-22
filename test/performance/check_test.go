@@ -119,14 +119,15 @@ func TestMain(m *testing.M) {
 
 func TestCheckPerformance(t *testing.T) {
 	tests := []struct {
-		name     string
-		cfg      gochk.Config
-		expected string
+		name       string
+		targetPath string
+		cfg        gochk.Config
+		expected   string
 	}{
 		{
 			"Check() performance test",
+			"../performance/",
 			gochk.Config{
-				TargetPath:                 "../performance/",
 				DependencyOrders:           dependencyOrders,
 				Ignore:                     []string{"test"},
 				PrintViolationsAtTheBottom: true,
@@ -139,7 +140,7 @@ func TestCheckPerformance(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			start := time.Now()
-			gochk.Check(tt.cfg)
+			gochk.Check(tt.targetPath, tt.cfg)
 			end := time.Now()
 			diff := end.Sub(start)
 			expected, _ := time.ParseDuration(tt.expected)

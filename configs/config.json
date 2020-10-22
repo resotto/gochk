@@ -1,6 +1,5 @@
 {
-  "targetPath": ".",
   "dependencyOrders": ["external", "adapter", "application", "domain"],
-  "ignore": ["test", "_test", ".git"],
+  "ignore": ["test", ".git"],
   "printViolationsAtTheBottom": false
 }

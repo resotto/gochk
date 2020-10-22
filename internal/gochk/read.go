@@ -11,7 +11,6 @@ import (
 
 // Config is converted data of config.json
 type Config struct {
-	TargetPath                 string
 	DependencyOrders           []string
 	Ignore                     []string
 	PrintViolationsAtTheBottom bool
@@ -42,8 +41,8 @@ type dependency struct {
 }
 
 // ParseConfig parses config.json
-func ParseConfig() Config {
-	absPath, _ := filepath.Abs("configs/config.json") // NOTICE: from root directory
+func ParseConfig(path string) Config {
+	absPath, _ := filepath.Abs(path)
 	bytes, err := ioutil.ReadFile(absPath)
 	if err != nil {
 		panic(err)
@@ -54,10 +53,10 @@ func ParseConfig() Config {
 }
 
 // Check checks dependencies
-func Check(cfg Config) ([]CheckResult, bool) {
+func Check(targetPath string, cfg Config) ([]CheckResult, bool) {
 	violated := false
 	results := make([]CheckResult, 0, 1000)
-	filepath.Walk(cfg.TargetPath, func(path string, info os.FileInfo, err error) error {
+	filepath.Walk(targetPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			results = append([]CheckResult{CheckResult{resultType: warning, message: err.Error(), color: purple}}, results...)
 			return nil

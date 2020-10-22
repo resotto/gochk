@@ -7,11 +7,10 @@ import (
 )
 
 func main() {
+	targetPath := flag.String("t", ".", "target path")
+	configPath := flag.String("c", "configs/config.json", "configuration file path")
 	flag.Parse()
-	config := gochk.ParseConfig()
-	if flag.Arg(0) != "" {
-		config.TargetPath = flag.Arg(0)
-	}
-	results, violated := gochk.Check(config)
+	config := gochk.ParseConfig(*configPath)
+	results, violated := gochk.Check(*targetPath, config)
 	gochk.Show(results, violated, config.PrintViolationsAtTheBottom)
 }
