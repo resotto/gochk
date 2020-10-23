@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/19743841/96338043-67719c80-10c6-11eb-9a5f-3b672356a9d6.gif">
+  <img src="https://user-images.githubusercontent.com/19743841/97001249-0983ff80-1573-11eb-818f-9bdbffe8f762.gif">
 </p>
 
 ---
@@ -30,6 +30,7 @@ Why gochk?
 ## Table of Contents
 
 - [Getting Started](#getting-started)
+- [Installation](#installation)
 - [How gochk works](#how-gochk-works)
 - [How to see results](#how-to-see-results)
 - [Configuration](#configuration)
@@ -65,11 +66,32 @@ If you have [Goilerplate](https://github.com/resotto/goilerplate), you can also 
 go run cmd/gochk/main.go -t=../goilerplate
 ```
 
-If your cwd is not in gochk root `${GOPATH}/src/github.com/resotto/gochk`, you must specify the location of the config.json with `-c`:
+If your current working directory is not in gochk root `${GOPATH}/src/github.com/resotto/gochk`, you must specify the location of the `config.json` with `-c`:
 
 ```zsh
 cd internal
 go run ../cmd/gochk/main.go -t=../../goilerplate -c=../configs/config.json
+```
+
+## Installation
+
+First of all, let's check whether `GOPATH` is set or not:
+
+```zsh
+go env GOPATH
+```
+
+And then, please check whether `${GOPATH}/bin` is included in your `$PATH`:
+
+```zsh
+echo $PATH
+```
+
+Finally, please install gochk:
+
+```zsh
+cd cmd/gochk
+go install
 ```
 
 ## How gochk works
@@ -82,7 +104,7 @@ go run ../cmd/gochk/main.go -t=../../goilerplate -c=../configs/config.json
   - gofumports
 - If you have files with following file path or import path, gochk might not work well.
   - The path including the two directory names specified in `dependencyOrders` in `gochk/configs/config.json`.
-    - For example, if you have the path `app/external/adapter/service` and want to handle this path as what is in `adapter`, and `dependencyOrders = ["external", "adapter"]`, the index of the path will be `0` (not 1).
+    - For example, if you have the path `app/external/adapter/service` and want to handle this path as what is in `adapter`, and `dependencyOrders = ["external", "adapter"]`, the index of the path will be `0` (not `1`).
 
 ### What gochk does
 
@@ -115,11 +137,10 @@ For example, if you have a file `app/application/usecase/xxx.go` with import pat
 
 You can check whether there are violations or not quickly by looking at the end of results.
 
-If you see `exit status 1`, there are violations!🚨
+If you see `Dependencies which violate dependency orders found!`, there are violations!🚨
 
 ```
 2020/10/19 23:37:03 Dependencies which violate dependency orders found!
-exit status 1
 ```
 
 If you see the following AA, congrats! there are no violations🎉
@@ -221,12 +242,12 @@ func matchIgnore(ignorePaths []string, path string, info os.FileInfo) (bool, err
 
   - If `true`, you can see violations at the bottom like:
   <p align="center">
-    <img src="https://user-images.githubusercontent.com/19743841/96462260-58beed00-1260-11eb-8459-4938d184cb37.gif">
+    <img src="https://user-images.githubusercontent.com/19743841/97001729-d42be180-1573-11eb-90d4-8c68c37f1e04.gif">
   </p>
 
   - If `false`, you see them disorderly (by goroutine):
   <p align="center">
-    <img src="https://user-images.githubusercontent.com/19743841/96462316-670d0900-1260-11eb-9b3c-882a3f7adf93.gif">
+    <img src="https://user-images.githubusercontent.com/19743841/97001521-74353b00-1573-11eb-8437-fe980c3b34ab.gif">
   </p>
 
 ## Unit Testing
