@@ -14,7 +14,7 @@ const (
 func TestSetResultType(t *testing.T) {
 	tests := []struct {
 		name             string
-		checkResults     []CheckResult
+		CheckResults     []CheckResult
 		dependencyOrders []string
 		path             string
 		expected         []CheckResult
@@ -25,8 +25,8 @@ func TestSetResultType(t *testing.T) {
 			dependencyOrders,
 			firstLayerPath,
 			[]CheckResult{
-				CheckResult{resultType: violated, message: "not tested", color: red},
-				CheckResult{resultType: violated, message: "not tested", color: red},
+				newViolated("this message is not tested"),
+				newViolated("this message is not tested"),
 			},
 		},
 		{
@@ -34,43 +34,34 @@ func TestSetResultType(t *testing.T) {
 			[]CheckResult{},
 			dependencyOrders,
 			lockedPath,
-			[]CheckResult{
-				CheckResult{resultType: warning, message: "not tested", color: purple},
-			},
+			[]CheckResult{newWarning("this message is not tested")},
 		},
 		{
 			"file which has no imports",
 			[]CheckResult{},
 			dependencyOrders,
 			underscoreTestPath,
-			[]CheckResult{
-				CheckResult{resultType: none, message: "not tested", color: teal},
-			},
+			[]CheckResult{newNone("this message is not tested")},
 		},
 		{
 			"file which has verified dependency",
 			[]CheckResult{},
 			dependencyOrders,
 			fourthLayerPath,
-			[]CheckResult{
-				CheckResult{resultType: verified, message: "not tested", color: green},
-			},
+			[]CheckResult{newVerified("this message is not tested")},
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			setResultType(&tt.checkResults, tt.dependencyOrders, tt.path)
-			if len(tt.checkResults) != len(tt.expected) {
-				t.Errorf("got %d, want %d", len(tt.checkResults), len(tt.expected))
+			setResultType(&tt.CheckResults, tt.dependencyOrders, tt.path)
+			if len(tt.CheckResults) != len(tt.expected) {
+				t.Errorf("got %d, want %d", len(tt.CheckResults), len(tt.expected))
 			}
-			for i, r := range tt.checkResults {
+			for i, r := range tt.CheckResults {
 				if r.resultType != tt.expected[i].resultType {
 					t.Errorf("got %s, want %s", r.resultType, tt.expected[i].resultType)
-				}
-				if r.color != tt.expected[i].color {
-					t.Errorf("got %s, want %s", r.color, tt.expected[i].color)
 				}
 			}
 		})
@@ -95,8 +86,8 @@ func TestRetrieveViolations(t *testing.T) {
 				dependency{filePath: currentPath, fileLayer: 2, importPath: pathA, importLayer: 2},
 			},
 			[]CheckResult{
-				CheckResult{resultType: violated, message: "not tested", color: red},
-				CheckResult{resultType: violated, message: "not tested", color: red},
+				newViolated("this message is not tested"),
+				newViolated("this message is not tested"),
 			},
 		},
 	}
@@ -111,9 +102,6 @@ func TestRetrieveViolations(t *testing.T) {
 			for i, r := range results {
 				if r.resultType != tt.expected[i].resultType {
 					t.Errorf("got %s, want %s", r.resultType, tt.expected[i].resultType)
-				}
-				if r.color != tt.expected[i].color {
-					t.Errorf("got %s, want %s", r.color, tt.expected[i].color)
 				}
 			}
 		})

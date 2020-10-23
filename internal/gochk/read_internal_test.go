@@ -109,9 +109,7 @@ func TestCheck(t *testing.T) {
 				Ignore:                     []string{},
 				PrintViolationsAtTheBottom: true,
 			},
-			[]CheckResult{
-				CheckResult{resultType: violated, message: "not tested", color: red},
-			},
+			[]CheckResult{newViolated("this message is not tested")},
 		},
 		{
 			"no results",
@@ -135,9 +133,6 @@ func TestCheck(t *testing.T) {
 			for i, r := range results {
 				if r.resultType != tt.expected[i].resultType {
 					t.Errorf("got %s, want %s", r.resultType, tt.expected[i].resultType)
-				}
-				if r.color != tt.expected[i].color {
-					t.Errorf("got %s, want %s", r.color, tt.expected[i].color)
 				}
 			}
 		})
@@ -208,9 +203,7 @@ func TestRetrieveDependencies(t *testing.T) {
 			dependencyOrders,
 			fourthLayerPath,
 			0,
-			[]dependency{
-				dependency{fourthLayerPath, 0, domainPkgPath, 3},
-			},
+			[]dependency{dependency{fourthLayerPath, 0, domainPkgPath, 3}},
 		},
 		{
 			"include file which couldn't be opened",

@@ -6,18 +6,18 @@ func setResultType(results *[]CheckResult, dependencyOrders []string, path strin
 	_, currentLayer := include(dependencyOrders, path)
 	dependencies, err := retrieveDependencies(dependencyOrders, path, currentLayer)
 	if err != nil {
-		*results = append([]CheckResult{CheckResult{resultType: warning, message: err.Error(), color: purple}}, *results...)
+		*results = append([]CheckResult{newWarning(err.Error())}, *results...)
 		return false
 	}
 	if len(dependencies) == 0 {
-		*results = append([]CheckResult{CheckResult{resultType: none, message: path, color: teal}}, *results...)
+		*results = append([]CheckResult{newNone(path)}, *results...)
 		return false
 	}
 	if violations := retrieveViolations(dependencyOrders, currentLayer, dependencies); len(violations) > 0 {
 		*results = append(*results, violations...)
 		return true
 	}
-	*results = append([]CheckResult{CheckResult{resultType: verified, message: path, color: green}}, *results...)
+	*results = append([]CheckResult{newVerified(path)}, *results...)
 	return false
 }
 
@@ -26,7 +26,7 @@ func retrieveViolations(dependencyOrders []string, currentLayer int, dependencie
 	for _, d := range dependencies {
 		if d.importLayer < currentLayer {
 			message := d.filePath + " imports " + d.importPath + "\n => " + dependencyOrders[d.fileLayer] + " depends on " + dependencyOrders[d.importLayer]
-			violations = append(violations, CheckResult{resultType: violated, message: message, color: red})
+			violations = append(violations, newViolated(message))
 		}
 	}
 	return violations

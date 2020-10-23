@@ -40,6 +40,46 @@ type dependency struct {
 	importLayer int
 }
 
+func newNone(message string) CheckResult {
+	cr := CheckResult{}
+	cr.resultType = none
+	cr.message = message
+	cr.color = teal
+	return cr
+}
+
+func newVerified(message string) CheckResult {
+	cr := CheckResult{}
+	cr.resultType = verified
+	cr.message = message
+	cr.color = green
+	return cr
+}
+
+func newIgnored(message string) CheckResult {
+	cr := CheckResult{}
+	cr.resultType = ignored
+	cr.message = message
+	cr.color = yellow
+	return cr
+}
+
+func newWarning(message string) CheckResult {
+	cr := CheckResult{}
+	cr.resultType = warning
+	cr.message = message
+	cr.color = purple
+	return cr
+}
+
+func newViolated(message string) CheckResult {
+	cr := CheckResult{}
+	cr.resultType = violated
+	cr.message = message
+	cr.color = red
+	return cr
+}
+
 // ParseConfig parses config.json
 func ParseConfig(path string) Config {
 	absPath, _ := filepath.Abs(path)
@@ -58,11 +98,11 @@ func Check(targetPath string, cfg Config) ([]CheckResult, bool) {
 	results := make([]CheckResult, 0, 1000)
 	filepath.Walk(targetPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			results = append([]CheckResult{CheckResult{resultType: warning, message: err.Error(), color: purple}}, results...)
+			results = append([]CheckResult{newWarning(err.Error())}, results...)
 			return nil
 		}
 		if matched, skipType := matchIgnore(cfg.Ignore, path, info); matched {
-			results = append([]CheckResult{CheckResult{resultType: ignored, message: path, color: yellow}}, results...)
+			results = append([]CheckResult{newIgnored(path)}, results...)
 			return skipType
 		}
 		if info.IsDir() || !strings.Contains(info.Name(), ".go") {

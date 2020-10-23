@@ -53,29 +53,36 @@ Please edit paths of `dependencyOrders` in `gochk/configs/config.json` according
 "dependencyOrders": ["external", "adapter", "application", "domain"],
 ```
 
-And then, let's gochk your target path!
+And then, let's gochk your target path with `-t`:
 
 ```zsh
-go run cmd/gochk/main.go ${YourTargetPath}
+go run cmd/gochk/main.go -t=${YourTargetPath}
 ```
 
 If you have [Goilerplate](https://github.com/resotto/goilerplate), you can also gochk it:
 
 ```zsh
-go run cmd/gochk/main.go ../goilerplate
+go run cmd/gochk/main.go -t=../goilerplate
+```
+
+If your cwd is not in gochk root `${GOPATH}/src/github.com/resotto/gochk`, you must specify the location of the config.json with `-c`:
+
+```zsh
+cd internal
+go run ../cmd/gochk/main.go -t=../../goilerplate -c=../configs/config.json
 ```
 
 ## How gochk works
 
 ### Prerequisites
 
-- **Please format all .go files with one of the following format tools in advance, which means only one import statement in .go file**.
+- **Please format all .go files with one of the following format tools in advance, which means only one import statement in a .go file**.
   - goimports
   - goreturns
   - gofumports
-- If you have files with following file / import path, gochk might not work well.
-  - The path including the two directory name specified in `dependencyOrders` in `gochk/configs/config.json`.
-    - For example, if you have the path `app/external/adapter/service` and want to handle this path as what is in `adapter`, and `dependencyOrders = ["external", "adapter"]`, the index of the path will be `0 (external)`.
+- If you have files with following file path or import path, gochk might not work well.
+  - The path including the two directory names specified in `dependencyOrders` in `gochk/configs/config.json`.
+    - For example, if you have the path `app/external/adapter/service` and want to handle this path as what is in `adapter`, and `dependencyOrders = ["external", "adapter"]`, the index of the path will be `0` (not 1).
 
 ### What gochk does
 
@@ -94,13 +101,13 @@ For example, if an usecase in "Use Cases" imports (depends on) what is in "Contr
 
 ### Check Logic
 
-Firstly, gochk fetchs the file path and gets index of `dependencyOrders` in `gochk/configs/config.json` if they are included in the file path.
+Firstly, gochk fetchs the file path and gets the index of `dependencyOrders` in `gochk/configs/config.json` if one of them is included in the file path.
 
-Second, gochk reads the file, parses imports of the file, and also gets index of `dependencyOrders` if matched.
+Second, gochk reads the file, parses import paths, and also gets the index of `dependencyOrders` if matched.
 
-And then, gochk compares those indices and detects violation **if the index of the import is smaller than that of the file path**.
+And then, gochk compares those indices and detects violation **if the index of the import path is smaller than that of the file path**.
 
-For example, if you have a file `app/application/usecase/xxx.go` with import `"app/adapter/service"` and `dependencyOrders = ["adapter", "application"]`, the index of the file is `1` and the index of its import is `0` so that the file violates dependency rule since the inequality `1 (index of file path) > 0 (index of import)` is established.
+For example, if you have a file `app/application/usecase/xxx.go` with import path `"app/adapter/service"` and `dependencyOrders = ["adapter", "application"]`, the index of the file is `1` and the index of its import is `0`. Therefore, the file violates dependency rule since the inequality `0 (the index of the import path) < 1 (the index of the file path)` is established.
 
 ## How to see results
 
@@ -139,7 +146,7 @@ gochk displays each result type in a different color by default:
 - ![#FFFF00](https://via.placeholder.com/15/FFFF00/000000?text=+) Ignored
   - which means the path is ignored (not checked).
 - ![#800080](https://via.placeholder.com/15/800080/000000?text=+) Warning
-  - which means something happened (and gochk doesn't check it).
+  - which means something happened (and gochk didn't check it).
 - ![#FF0000](https://via.placeholder.com/15/FF0000/000000?text=+) Violated
   - which means there are dependencies which violates dependency rule.
 
@@ -172,38 +179,15 @@ For `Violated`, it displays the file path, its dependency, and how it violates d
 
 ## Configuration
 
-### Notice
-
-_Please run gochk from root directory_ because the absolute path is specified in `ParseConfig()` in order to retrieve `config.json`.
-
-```go
-// read.go
-func ParseConfig() Config {
-	absPath, _ := filepath.Abs("configs/config.json") // NOTICE: from root directory
-	// omitted
-}
-```
-
-### Setting Values
-
 `gochk/configs/config.json` has configuration values.
 
 ```json
 {
-  "targetPath": ".",
   "dependencyOrders": ["external", "adapter", "application", "domain"],
   "ignore": ["test", ".git"],
   "printViolationsAtTheBottom": false
 }
 ```
-
-- `targetPath` is default check target path.
-
-  - If you specify this parameter, you don't have to pass target path via command line argument like:
-
-    ```zsh
-    go run cmd/gochk/main.go
-    ```
 
 - `dependencyOrders` are the paths of each circles in Clean Architecture.
 
@@ -218,7 +202,7 @@ func ParseConfig() Config {
 
 - `ignore` has the paths ignored by gochk, which can be file path or dir path.
 
-  - If you have the directory you want to ignore, **specifing them improve the performance of gochk since it returns `filepath.SkipDir`**.
+  - If you have the directory you want to ignore, **specifing them might improve the performance of gochk since it returns `filepath.SkipDir`**.
 
 ```go
 // read.go
@@ -247,9 +231,10 @@ func matchIgnore(ignorePaths []string, path string, info os.FileInfo) (bool, err
 
 ## Unit Testing
 
-Unit test files are placed in `gochk/internal/gochk`.
+Unit test files are located in `gochk/internal/gochk`.
 
 ```zsh
+gochk
 ├── internal
 │   └── gochk
 │       ├── calc_internal_test.go # Unit test (internal)
@@ -279,7 +264,7 @@ ok      github.com/resotto/gochk/internal/gochk 0.065s # Not cache
 
 ## Performance Test
 
-Performance test file is placed in `gochk/test/performance`.
+Performance test file is located in `gochk/test/performance`.
 
 ```zsh
 gochk
@@ -309,7 +294,7 @@ Performance test checks 40,000 test files in `gochk/test/performance` and measur
 - For each test directory, there will be 10,000 .go test files.
 
 ```zsh
-.
+gochk
 └── test
     ├── performance
     │   ├── adapter         # Test directory
@@ -443,10 +428,16 @@ const (
 )
 ```
 
-And then, let's change color of result type in `Check()` in read.go or `setResultType()` in calc.go:
+And then, let's change color of result type in read.go:
 
 ```go
-results = append([]CheckResult{CheckResult{resultType: warning, message: err.Error(), color: newColor /* HERE */ }}, results...)
+func newWarning(message string) CheckResult {
+	cr := CheckResult{}
+	cr.resultType = warning
+	cr.message = message
+	cr.color = newColor // New color
+	return cr
+}
 ```
 
 ### Tuning the number of goroutine
