@@ -43,6 +43,12 @@ Why gochk?
 
 ## Getting Started
 
+### Docker
+
+See [Build](#build).
+
+### Local
+
 ```zsh
 go get -u github.com/resotto/gochk
 cd ${GOPATH}/src/github.com/resotto/gochk
@@ -486,7 +492,35 @@ func printConcurrently(results []CheckResult) {
 
 ## Build
 
-How to build ...
+From gochk root directory `${GOPATH}/src/github.com/resotto/gochk`, please run:
+
+```zsh
+docker build -t gochk:latest -f build/Dockerfile .
+```
+
+After building gochk docker image, please prepare Dockerfile with the package you want to gochk:
+
+```Dockerfile
+FROM gochk:latest
+
+RUN go get -u ${TargetPackage}
+
+WORKDIR /go/src/github.com/resotto/gochk
+
+ENTRYPOINT ["/go/bin/gochk", "-t=${TargetPackageRoot}"]
+```
+
+And then, please build the docker image:
+
+```zsh
+docker build -t gochk-${YourPackage}:latest .
+```
+
+Finally, let's gochk your target package on docker container:
+
+```zsh
+docker run --rm -it gochk-${YourPackage}:latest
+```
 
 ## Feedback
 
