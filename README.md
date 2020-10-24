@@ -499,17 +499,17 @@ From gochk root directory `${GOPATH}/src/github.com/resotto/gochk`, please run:
 docker build -t gochk:latest -f build/Dockerfile .
 ```
 
-Or you can also pull the image fron dockerhub:
+Or you can also pull the image fron GitHub Container Registry:
 
 ```zsh
-git pull resotto/gochk
+docker pull ghcr.io/resotto/gochk:latest
 ```
 
 After getting gochk docker image, please prepare Dockerfile with the package you want to gochk:
 
 ```Dockerfile
- # FROM resotto/gochk:latest
-FROM gochk:latest
+# FROM gochk:latest
+FROM ghcr.io/resotto/gochk:latest
 
 RUN go get -u ${TargetPackage}
 
