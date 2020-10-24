@@ -98,6 +98,7 @@ Finally, please install gochk:
 ```zsh
 cd cmd/gochk
 go install
+# gochk -t=../../../goilerplate -c=../../configs/config.json
 ```
 
 ## How gochk works
@@ -434,8 +435,8 @@ Following scores are not cached ones and measured by two Macbook Pros whose spec
 
 | CPU                             | RAM                    | 1st score | 2nd score | 3rd score | Average    |
 | :------------------------------ | :--------------------- | :-------- | :-------- | :-------- | :--------- |
-| 2.7 GHz Dual-Core Intel Core i5 | 8 GB 1867 MHz DDR3     | 90.43s    | 91.23s    | 88.84s    | **90.17s** |
-| 2 GHz Quad-Core Intel Core i5   | 32 GB 3733 MHz LPDDR4X | 54.97s    | 54.03s    | 50.60s    | **53.2s**  |
+| 2.7 GHz Dual-Core Intel Core i5 | 8 GB 1867 MHz DDR3     | 99.53s    | 97.08s    | 93.88s    | **96.83s** |
+| 2 GHz Quad-Core Intel Core i5   | 32 GB 3733 MHz LPDDR4X | 59.64s    | 55.57s    | 52.09s    | **55.77s** |
 
 ## Customization
 
@@ -498,9 +499,16 @@ From gochk root directory `${GOPATH}/src/github.com/resotto/gochk`, please run:
 docker build -t gochk:latest -f build/Dockerfile .
 ```
 
-After building gochk docker image, please prepare Dockerfile with the package you want to gochk:
+Or you can also pull the image fron dockerhub:
+
+```zsh
+git pull resotto/gochk
+```
+
+After getting gochk docker image, please prepare Dockerfile with the package you want to gochk:
 
 ```Dockerfile
+ # FROM resotto/gochk:latest
 FROM gochk:latest
 
 RUN go get -u ${TargetPackage}
