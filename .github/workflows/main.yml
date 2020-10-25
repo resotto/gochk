@@ -1,0 +1,36 @@
+name: Test, Build and Push to GitHub Container Registry
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Run unit tests
+        run: |
+          cd internal/gochk
+          go test ./...
+
+  build_and_push_to_ghcr:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+      - name: Build Docker Image and Push
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          context: .
+          file: ./build/Dockerfile
+          tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest
