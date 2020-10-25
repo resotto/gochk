@@ -1,4 +1,4 @@
-name: gochk goilerplate
+name: gochk sample
 
 on: [push]
 
@@ -17,6 +17,4 @@ jobs:
           repository: resotto/goilerplate
       - name: Run gochk
         run: |
-          pwd
-          ls
           /go/bin/gochk -c=/go/src/github.com/resotto/gochk/configs/config.json
