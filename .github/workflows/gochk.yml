@@ -15,8 +15,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: resotto/goilerplate
-          path: /go/src/github.com/resotto/
       - name: Run gochk
         run: |
           cd /go/src/github.com/resotto/gochk
-          /go/bin/gochk -t=../goilerplate
+          /go/bin/gochk -t=${{ github.workspace }}/goilerplate
