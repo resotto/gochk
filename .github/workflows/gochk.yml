@@ -1,0 +1,18 @@
+name: gochk package
+
+on: [push]
+
+jobs:
+  gochk-goilerplate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull gochk
+        uses: docker://ghcr.io/resotto/gochk:latest
+      - name: Go get -u gorm.io/gorm
+        run: go get -u gorm.io/gorm
+      - name: Go get -u github.com/resotto/goilerplate
+        run: go get -u github.com/resotto/goilerplate
+      - name: Run gochk
+        run: |
+          cd /go/src/github.com/resotto/gochk
+          /go/bin/gochk -t=../goilerplate

@@ -12,7 +12,7 @@ jobs:
         run: |
           cd internal/gochk
           ls
-          go test ./...
+          go test -v ./...
 
   build_and_push_to_ghcr:
     needs: test
