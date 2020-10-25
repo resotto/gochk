@@ -13,6 +13,7 @@ const (
 	pfmt     = "\"fmt\""
 	pstrings = "\"strings\""
 
+	testConfigPath      = "../../test/testdata/test.json"
 	testDirPath         = "../../test/testdata/test"
 	underscoreTestPath  = "../../test/testdata/_test.go"
 	blockCommentsPath   = "../../test/testdata/blockComments.go"
@@ -94,6 +95,59 @@ func TestMain(m *testing.M) {
 	os.Exit(result)
 }
 
+func TestParseConfig(t *testing.T) {
+	tests := []struct {
+		name     string
+		path     string
+		expected Config
+	}{
+		{
+			"succeeded in parsing config",
+			testConfigPath,
+			Config{
+				DependencyOrders:           []string{"external", "adapter", "application", "domain"},
+				Ignore:                     []string{"test", ".git"},
+				PrintViolationsAtTheBottom: false,
+			},
+		},
+		{
+			"failed at parsing config",
+			testDirPath + "/test.json",
+			Config{
+				DependencyOrders:           []string{"external", "adapter", "application", "domain"},
+				Ignore:                     []string{"test", ".git"},
+				PrintViolationsAtTheBottom: false,
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			defer func() {
+				err := recover()
+				if err != nil && !strings.Contains(tt.name, "failed at parsing config") {
+					t.Errorf("got %s, want %s", tt.name, "\"failed at parsing config\" should create panic")
+				}
+			}()
+			result := ParseConfig(tt.path)
+			for i, r := range result.DependencyOrders {
+				if r != tt.expected.DependencyOrders[i] {
+					t.Errorf("got %s, want %s", r, tt.expected.DependencyOrders[i])
+				}
+			}
+			for i, r := range result.Ignore {
+				if r != tt.expected.Ignore[i] {
+					t.Errorf("got %s, want %s", r, tt.expected.Ignore[i])
+				}
+			}
+			if result.PrintViolationsAtTheBottom != tt.expected.PrintViolationsAtTheBottom {
+				t.Errorf("got %t, want %t", result.PrintViolationsAtTheBottom, tt.expected.PrintViolationsAtTheBottom)
+			}
+		})
+	}
+}
+
 func TestCheck(t *testing.T) {
 	tests := []struct {
 		name       string
@@ -120,6 +174,26 @@ func TestCheck(t *testing.T) {
 				PrintViolationsAtTheBottom: true,
 			},
 			[]CheckResult{},
+		},
+		{
+			"ignored",
+			testDirPath,
+			Config{
+				DependencyOrders:           dependencyOrders,
+				Ignore:                     []string{"test"},
+				PrintViolationsAtTheBottom: true,
+			},
+			[]CheckResult{newIgnored("this message is not tested")},
+		},
+		{
+			"warning for the path which doesn't exist",
+			testDirPath + "/none.go",
+			Config{
+				DependencyOrders:           dependencyOrders,
+				Ignore:                     []string{},
+				PrintViolationsAtTheBottom: true,
+			},
+			[]CheckResult{newWarning("this message is not tested")},
 		},
 	}
 	for _, tt := range tests {

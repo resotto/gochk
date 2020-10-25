@@ -1,0 +1,5 @@
+{
+  "dependencyOrders": ["external", "adapter", "application", "domain"],
+  "ignore": ["test", ".git"],
+  "printViolationsAtTheBottom": false
+}
