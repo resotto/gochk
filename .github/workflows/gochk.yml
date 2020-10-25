@@ -3,7 +3,7 @@ name: gochk package
 on: [push]
 
 jobs:
-  gochk-goilerplate:
+  login:
     runs-on: ubuntu-latest
     steps:
       - name: Login to GitHub Container Registry
@@ -12,6 +12,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
+
+  gochk-goilerplate:
+    runs-on: ubuntu-latest
+    needs: login
+    steps:
       - name: Pull gochk
         uses: docker://ghcr.io/resotto/gochk:latest
       - name: Go get -u gorm.io/gorm
