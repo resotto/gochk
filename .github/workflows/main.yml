@@ -33,4 +33,4 @@ jobs:
           push: true
           context: .
           file: ./build/Dockerfile
-          tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest
+          tags: ghcr.io/${{ github.repository }}:latest
