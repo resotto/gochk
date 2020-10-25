@@ -17,5 +17,6 @@ jobs:
           repository: resotto/goilerplate
       - name: Run gochk
         run: |
+          pwd
           cd /go/src/github.com/resotto/gochk
           /go/bin/gochk -t=${{ github.workspace }}/goilerplate
