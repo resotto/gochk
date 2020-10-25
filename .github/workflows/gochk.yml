@@ -18,6 +18,5 @@ jobs:
       - name: Run gochk
         run: |
           pwd
-          echo $GITHUB_WORKSPACE
-          cd /go/src/github.com/resotto/gochk
-          /go/bin/gochk -t=${{ github.workspace }}/goilerplate
+          ls
+          /go/bin/gochk -c=/go/src/github.com/resotto/gochk/configs/config.json
