@@ -39,6 +39,7 @@ Why gochk?
 - [Performance Test](#performance-test)
 - [Customization](#customization)
 - [Build](#build)
+- [GitHub Actions](#github-actions)
 - [Feedback](#feedback)
 - [License](#license)
 
@@ -530,6 +531,39 @@ Finally, let's gochk your target package on docker container:
 ```zsh
 docker run --rm -it gochk-${YourPackage}:latest
 ```
+
+## GitHub Actions
+
+You can gochk your package on GitHub Actions with following yml file (temporary specifying credentials):
+
+```yml
+name: gochk sample
+
+on: [push]
+
+jobs:
+  gochk-goilerplate:
+    runs-on: ubuntu-latest
+    container:
+      image: docker://ghcr.io/resotto/gochk:latest
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.CR_PAT }}
+    steps:
+      - name: Clone Goilerplate
+        uses: actions/checkout@v2
+        with:
+          repository: resotto/goilerplate
+      - name: Run gochk
+        run: |
+          /go/bin/gochk -c=/go/src/github.com/resotto/gochk/configs/config.json
+```
+
+[This is the result](https://github.com/resotto/gochk/runs/1304800817):
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/19743841/97106961-1ab24500-1708-11eb-939d-275b08744a9f.png">
+</p>
 
 ## Feedback
 
