@@ -1,4 +1,4 @@
-name: Test, Build and Push to GitHub Container Registry
+name: build
 
 on: [push, pull_request]
 
