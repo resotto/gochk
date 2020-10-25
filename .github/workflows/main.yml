@@ -11,6 +11,7 @@ jobs:
       - name: Run unit tests
         run: |
           cd internal/gochk
+          ls
           go test ./...
 
   build_and_push_to_ghcr:
