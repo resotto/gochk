@@ -11,10 +11,10 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.CR_PAT }}
     steps:
-      - name: Go get -u gorm.io/gorm
-        run: go get -u gorm.io/gorm
-      - name: Go get -u github.com/resotto/goilerplate
-        run: go get -u github.com/resotto/goilerplate
+      - name: Clone Goilerplate
+        uses: actions/checkout@v2
+          repository: resotto/goilerplate
+          path: /go/src/github.com/resotto/
       - name: Run gochk
         run: |
           cd /go/src/github.com/resotto/gochk
