@@ -13,6 +13,7 @@ jobs:
     steps:
       - name: Clone Goilerplate
         uses: actions/checkout@v2
+        with:
           repository: resotto/goilerplate
           path: /go/src/github.com/resotto/
       - name: Run gochk
