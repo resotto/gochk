@@ -23,7 +23,7 @@ What is gochk?
 
 Why gochk?
 
-- ZERO Dependency
+- **ZERO Dependency**
 - Simple & Easy-to-Read Outputs
 
 ---
