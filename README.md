@@ -41,6 +41,7 @@ Why gochk?
 - [Build](#build)
 - [GitHub Actions](#github-actions)
 - [Feedback](#feedback)
+- [Contributing](#contributing)
 - [License](#license)
 
 ## Getting Started
@@ -569,6 +570,23 @@ jobs:
 
 - [Feel free to write your thoughts](https://github.com/resotto/gochk/issues/1)
 - Report a bug to [Bug report](https://github.com/resotto/gochk/issues/2).
+
+## Contributing
+
+I appreciate your help.
+
+First, please write your issue(proposal) in [gochk issues](https://github.com/resotto/gochk/issues).
+
+Secondly, you must have the following tools and settings on your IDE:
+
+- `godoc` for docs
+- `goreturns` for format
+- `golint` for lint
+- build on save for `package`
+- lint on save for `package`
+- vet on save for `package`
+
+After satisfing the above, please make a branch with `{ISSUE_NUMBER}.{SUMMARY}`, and then please make a pull request of it.
 
 ## License
 
