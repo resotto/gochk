@@ -1,4 +1,6 @@
-<h1 align="center">gochk</h1>
+<h1 align="center">
+  <img src="https://user-images.githubusercontent.com/19743841/97306981-757fa400-18a2-11eb-96ac-f8471f9b066d.png" />
+</h1>
 
 <p align="center">
   <a href="https://github.com/resotto/gochk/actions"><img src="https://github.com/resotto/gochk/workflows/build/badge.svg" /></a>
