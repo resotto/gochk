@@ -6,7 +6,6 @@ import (
 	"sync"
 )
 
-// Color is ANSI escape code
 type color string
 
 const (

@@ -35,9 +35,9 @@ Why gochk?
 - [How gochk works](#how-gochk-works)
 - [How to see results](#how-to-see-results)
 - [Configuration](#configuration)
+- [Customization](#customization)
 - [Unit Testing](#unit-testing)
 - [Performance Test](#performance-test)
-- [Customization](#customization)
 - [Build](#build)
 - [GitHub Actions](#github-actions)
 - [Feedback](#feedback)
@@ -259,6 +259,59 @@ func matchIgnore(ignorePaths []string, path string, info os.FileInfo) (bool, err
     <img src="https://user-images.githubusercontent.com/19743841/97001521-74353b00-1573-11eb-8437-fe980c3b34ab.gif">
   </p>
 
+## Customization
+
+### Changing Result Color
+
+First, please add the ANSI escape code to print.go:
+
+```go
+const (
+	teal     color = "\033[1;36m"
+	green          = "\033[1;32m"
+	yellow         = "\033[1;33m"
+	purple         = "\033[1;35m"
+	red            = "\033[1;31m"
+	newColor       = "\033[1;34m" // New color
+	reset          = "\033[0m"
+)
+```
+
+And then, let's change color of result type in read.go:
+
+```go
+func newWarning(message string) CheckResult {
+	cr := CheckResult{}
+	cr.resultType = warning
+	cr.message = message
+	cr.color = newColor // New color
+	return cr
+}
+```
+
+### Tuning the number of goroutine
+
+If `printViolationsAtTheBottom` is `false`, gochk prints results with goroutine.
+
+You can change the number of goroutine in print.go:
+
+```go
+func printConcurrently(results []CheckResult) {
+	c := make(chan struct{}, 10) // 10 goroutines by default
+	var wg sync.WaitGroup
+	for _, r := range results {
+		r := r
+		c <- struct{}{}
+		wg.Add(1)
+		go func() {
+			defer func() { <-c; wg.Done() }()
+			printColorMessage(r)
+		}()
+	}
+	wg.Wait()
+}
+```
+
 ## Unit Testing
 
 Unit test files are located in `gochk/internal/gochk`.
@@ -439,59 +492,6 @@ Following scores are not cached ones and measured by two Macbook Pros whose spec
 | :------------------------------ | :--------------------- | :-------- | :-------- | :-------- | :--------- |
 | 2.7 GHz Dual-Core Intel Core i5 | 8 GB 1867 MHz DDR3     | 99.53s    | 97.08s    | 93.88s    | **96.83s** |
 | 2 GHz Quad-Core Intel Core i5   | 32 GB 3733 MHz LPDDR4X | 59.64s    | 55.57s    | 52.09s    | **55.77s** |
-
-## Customization
-
-### Changing Result Color
-
-First, please add the ANSI escape code to print.go:
-
-```go
-const (
-	teal     color = "\033[1;36m"
-	green          = "\033[1;32m"
-	yellow         = "\033[1;33m"
-	purple         = "\033[1;35m"
-	red            = "\033[1;31m"
-	newColor       = "\033[1;34m" // New color
-	reset          = "\033[0m"
-)
-```
-
-And then, let's change color of result type in read.go:
-
-```go
-func newWarning(message string) CheckResult {
-	cr := CheckResult{}
-	cr.resultType = warning
-	cr.message = message
-	cr.color = newColor // New color
-	return cr
-}
-```
-
-### Tuning the number of goroutine
-
-If `printViolationsAtTheBottom` is `false`, gochk prints results with goroutine.
-
-You can change the number of goroutine in print.go:
-
-```go
-func printConcurrently(results []CheckResult) {
-	c := make(chan struct{}, 10) // 10 goroutines by default
-	var wg sync.WaitGroup
-	for _, r := range results {
-		r := r
-		c <- struct{}{}
-		wg.Add(1)
-		go func() {
-			defer func() { <-c; wg.Done() }()
-			printColorMessage(r)
-		}()
-	}
-	wg.Wait()
-}
-```
 
 ## Build
 
