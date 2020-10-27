@@ -4,6 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/resotto/gochk/actions"><img src="https://github.com/resotto/gochk/workflows/build/badge.svg" /></a>
+  <a href="https://bestpractices.coreinfrastructure.org/projects/4380"><img src="https://bestpractices.coreinfrastructure.org/projects/4380/badge"></a>
   <a href="https://github.com/resotto/gochk/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-GPL%20v3.0-brightgreen.svg" /></a>
 </p>
 
