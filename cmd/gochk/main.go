@@ -1,3 +1,22 @@
+/*
+
+gochk checks whether .go files violate Clean Architecture The Dependency Rule or not, and prints its results.
+
+https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule
+
+Usage:
+	gochk [flag]
+
+The flags are:
+	-t
+		Target path. Default value is ".".
+	-c
+		The path of config.json. Default value is "configs/config.json".
+
+Example:
+	gochk -t=../../../goilerplate -c=../../configs/config.json
+
+*/
 package main
 
 import (
