@@ -11,21 +11,15 @@ on:
       - master
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    steps:
-      - name: install golint
-        run: |
-          export PATH=$PATH:$(go env GOPATH)/bin
-          go get -u golang.org/x/lint/golint
   test:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
       - name: Run golint, go vet, and go test
         run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+          go get -u golang.org/x/lint/golint
           golint -set_exit_status ./...
           go vet -v ./...
           cd internal/gochk
