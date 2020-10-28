@@ -11,14 +11,18 @@ on:
       - master
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install tools
+        run: |
+          go get -u golang.org/x/lint/golint
   test:
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
-      - name: install tools
-        run: |
-          go get -u golang.org/x/lint/golint
       - name: Run golint, go vet, and go test
         run: |
           golint -set_exit_status
