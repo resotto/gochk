@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Run golint, go vet, and go test
         run: |
-          golint -set_exit_status
+          /usr/local/go/bin/golint -set_exit_status
           go vet -v ./...
           cd internal/gochk
           ls
