@@ -589,7 +589,11 @@ Secondly, you must have the following tools and settings on your IDE:
 - lint on save for `package`
 - vet on save for `package`
 
-After satisfing the above, please make a branch with `{ISSUE_NUMBER}.{SUMMARY}`, and then please make a pull request of it.
+After satisfing the above, please make a branch with `{ISSUE_NUMBER}.{SUMMARY}`
+
+You MUST also fix/add unit tests of your implementation in `internal/gochk/xxx_internal_test.go`.
+
+Finally, please make a pull request of it.
 
 ## License
 
