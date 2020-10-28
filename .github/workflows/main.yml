@@ -14,10 +14,9 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
-      - name: setup go environment
-        uses: actions/setup-go@v2
-      - name: install tools
+      - name: install golint
         run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
           go get -u golang.org/x/lint/golint
   test:
     needs: setup
@@ -27,7 +26,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Run golint, go vet, and go test
         run: |
-          golint -set_exit_status
+          golint -set_exit_status ./...
           go vet -v ./...
           cd internal/gochk
           ls
