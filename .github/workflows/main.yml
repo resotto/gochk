@@ -16,7 +16,10 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
-      - name: Run unit tests
+      - name: install tools
+        run: |
+          go get -u golang.org/x/lint/golint
+      - name: Run golint, go vet, and go test
         run: |
           golint -set_exit_status
           go vet -v ./...
