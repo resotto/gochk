@@ -18,13 +18,13 @@
 
 ---
 
-What is gochk?
+What is Gochk?
 
-- gochk checks whether .go files violate [Clean Architecture The Dependency Rule](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule) or not, and prints its results.
+- Gochk checks whether .go files violate [Clean Architecture The Dependency Rule](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule) or not, and prints its results.
 
   > This rule says that source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle.
 
-Why gochk?
+Why Gochk?
 
 - **ZERO Dependency**
 - Simple & Easy-to-Read Outputs
@@ -35,7 +35,7 @@ Why gochk?
 
 - [Getting Started](#getting-started)
 - [Installation](#installation)
-- [How gochk works](#how-gochk-works)
+- [How Gochk works](#how-gochk-works)
 - [How to see results](#how-to-see-results)
 - [Configuration](#configuration)
 - [Customization](#customization)
@@ -78,7 +78,7 @@ If you have [Goilerplate](https://github.com/resotto/goilerplate), you can also 
 go run cmd/gochk/main.go -t=../goilerplate
 ```
 
-If your current working directory is not in gochk root `${GOPATH}/src/github.com/resotto/gochk`, you must specify the location of the `config.json` with `-c`:
+If your current working directory is not in Gochk root `${GOPATH}/src/github.com/resotto/gochk`, you must specify the location of the `config.json` with `-c`:
 
 ```zsh
 cd internal
@@ -99,7 +99,7 @@ And then, please check whether `${GOPATH}/bin` is included in your `$PATH`:
 echo $PATH
 ```
 
-Finally, please install gochk:
+Finally, please install Gochk:
 
 ```zsh
 cd cmd/gochk
@@ -107,7 +107,7 @@ go install
 # gochk -t=../../../goilerplate -c=../../configs/config.json
 ```
 
-## How gochk works
+## How Gochk works
 
 ### Prerequisites
 
@@ -115,13 +115,13 @@ go install
   - goimports
   - goreturns
   - gofumports
-- If you have files with following file path or import path, gochk might not work well.
+- If you have files with following file path or import path, Gochk might not work well.
   - The path including the two directory names specified in `dependencyOrders` in `gochk/configs/config.json`.
     - For example, if you have the path `app/external/adapter/service` and want to handle this path as what is in `adapter`, and `dependencyOrders = ["external", "adapter"]`, the index of the path will be `0` (not `1`).
 
-### What gochk does
+### What Gochk does
 
-gochk checks whether .go files violate [Clean Architecture The Dependency Rule](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule) or not, and prints its results.
+Gochk checks whether .go files violate [Clean Architecture The Dependency Rule](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule) or not, and prints its results.
 
 > This rule says that source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle.
 
@@ -136,11 +136,11 @@ For example, if an usecase in "Use Cases" imports (depends on) what is in "Contr
 
 ### Check Logic
 
-Firstly, gochk fetchs the file path and gets the index of `dependencyOrders` in `gochk/configs/config.json` if one of them is included in the file path.
+Firstly, Gochk fetchs the file path and gets the index of `dependencyOrders` in `gochk/configs/config.json` if one of them is included in the file path.
 
-Second, gochk reads the file, parses import paths, and also gets the index of `dependencyOrders` if matched.
+Second, Gochk reads the file, parses import paths, and also gets the index of `dependencyOrders` if matched.
 
-And then, gochk compares those indices and detects violation **if the index of the import path is smaller than that of the file path**.
+And then, Gochk compares those indices and detects violation **if the index of the import path is smaller than that of the file path**.
 
 For example, if you have a file `app/application/usecase/xxx.go` with import path `"app/adapter/service"` and `dependencyOrders = ["adapter", "application"]`, the index of the file is `1` and the index of its import is `0`. Therefore, the file violates dependency rule since the inequality `0 (the index of the import path) < 1 (the index of the file path)` is established.
 
@@ -171,7 +171,7 @@ If you see the following AA, congrats! there are no violations🎉
 
 ### Result types
 
-gochk displays each result type in a different color by default:
+Gochk displays each result type in a different color by default:
 
 - ![#008080](https://via.placeholder.com/15/008080/000000?text=+) None
   - which means there are imports irrelevant to dependency rule or no imports at all
@@ -180,7 +180,7 @@ gochk displays each result type in a different color by default:
 - ![#FFFF00](https://via.placeholder.com/15/FFFF00/000000?text=+) Ignored
   - which means the path is ignored (not checked).
 - ![#800080](https://via.placeholder.com/15/800080/000000?text=+) Warning
-  - which means something happened (and gochk didn't check it).
+  - which means something happened (and Gochk didn't check it).
 - ![#FF0000](https://via.placeholder.com/15/FF0000/000000?text=+) Violated
   - which means there are dependencies which violates dependency rule.
 
@@ -234,9 +234,9 @@ For `Violated`, it displays the file path, its dependency, and how it violates d
 
   - If you have other layered architecture, you could specify its layers to this parameter as well.
 
-- `ignore` has the paths ignored by gochk, which can be file path or dir path.
+- `ignore` has the paths ignored by Gochk, which can be file path or dir path.
 
-  - If you have the directory you want to ignore, **specifing them might improve the performance of gochk since it returns `filepath.SkipDir`**.
+  - If you have the directory you want to ignore, **specifing them might improve the performance of Gochk since it returns `filepath.SkipDir`**.
 
 ```go
 // read.go
@@ -251,7 +251,7 @@ func matchIgnore(ignorePaths []string, path string, info os.FileInfo) (bool, err
 }
 ```
 
-- `printViolationsAtTheBottom` is the flag whether gochk prints violations of the dependency rule at the bottom or not.
+- `printViolationsAtTheBottom` is the flag whether Gochk prints violations of the dependency rule at the bottom or not.
 
   - If `true`, you can see violations at the bottom like:
   <p align="center">
@@ -295,7 +295,7 @@ func newWarning(message string) CheckResult {
 
 ### Tuning the number of goroutine
 
-If `printViolationsAtTheBottom` is `false`, gochk prints results with goroutine.
+If `printViolationsAtTheBottom` is `false`, Gochk prints results with goroutine.
 
 You can change the number of goroutine in print.go:
 
@@ -499,7 +499,7 @@ Following scores are not cached ones and measured by two Macbook Pros whose spec
 
 ## Build
 
-From gochk root directory `${GOPATH}/src/github.com/resotto/gochk`, please run:
+From Gochk root directory `${GOPATH}/src/github.com/resotto/gochk`, please run:
 
 ```zsh
 docker build -t gochk:latest -f build/Dockerfile .
@@ -511,7 +511,7 @@ Or you can also pull the image fron GitHub Container Registry:
 docker pull ghcr.io/resotto/gochk:latest
 ```
 
-After getting gochk docker image, please prepare Dockerfile with the package you want to gochk:
+After getting Gochk docker image, please prepare Dockerfile with the package you want to gochk:
 
 ```Dockerfile
 # FROM gochk:latest
@@ -578,7 +578,7 @@ jobs:
 
 I appreciate your help.
 
-First, please write your issue(proposal) in [gochk issues](https://github.com/resotto/gochk/issues).
+First, please write your issue(proposal) in [Gochk issues](https://github.com/resotto/gochk/issues).
 
 Secondly, you must have the following tools and settings on your IDE:
 
