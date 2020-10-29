@@ -16,13 +16,13 @@ jobs:
     steps:
       - name: setup go environment
         run: |
-          export PUBLIC_REPO_NAME=$(curl https://api.github.com/users/resotto/repos | jq '.[]["full_name"] | select(. | contains({{ github.repository }}))')
+          export PUBLIC_REPO_NAME=$(curl https://api.github.com/users/resotto/repos | jq '.[]["full_name"] | select(. | contains(${{ github.repository }}))')
           echo "::set-env name=PUBLIC_REPO_NAME::$PUBLIC_REPO_NAME"
-          echo "$PUBLIC_REPO_NAME, {{ env.PUBLIC_REPO_NAME }}"
+          echo "$PUBLIC_REPO_NAME, ${{ env.PUBLIC_REPO_NAME }}"
       - name: set goprivate if this repo is private
         if: ${{ env.PUBLIC_REPO_NAME }} == ""
         run: |
-          go env -w GOPRIVATE=github.com/{{ github.repository }}
+          go env -w GOPRIVATE=github.com/${{ github.repository }}
   test:
     needs: setup
     runs-on: ubuntu-latest
