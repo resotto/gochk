@@ -33,7 +33,7 @@ jobs:
       - name: Run golint, go vet, and go test
         run: |
           go get -u golang.org/x/lint/golint
-          golint -set_exit_status
+          $(go env GOPATH)/bin/golint -set_exit_status
           cd internal/gochk
           ls
           go test -v ./...
