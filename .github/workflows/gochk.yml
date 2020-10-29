@@ -7,9 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: docker://ghcr.io/resotto/gochk:latest
-      credentials:
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.CR_PAT }}
     steps:
       - name: Clone Goilerplate
         uses: actions/checkout@v2

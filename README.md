@@ -538,7 +538,7 @@ docker run --rm -it gochk-${YourPackage}:latest
 
 ## GitHub Actions
 
-You can gochk your package on GitHub Actions with following yml file (temporary specifying credentials):
+You can gochk your package on GitHub Actions with following yml file:
 
 ```yml
 name: gochk sample
@@ -550,9 +550,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: docker://ghcr.io/resotto/gochk:latest
-      credentials:
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.CR_PAT }}
     steps:
       - name: Clone Goilerplate
         uses: actions/checkout@v2
