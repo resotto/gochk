@@ -45,6 +45,7 @@ Why Gochk?
 - [GitHub Actions](#github-actions)
 - [Feedback](#feedback)
 - [Contributing](#contributing)
+- [Release Notes](#release-notes)
 - [License](#license)
 
 ## Getting Started
@@ -591,6 +592,10 @@ After satisfing the above, please make a branch with `{ISSUE_NUMBER}.{SUMMARY}`
 You MUST also fix/add unit tests of your implementation in `internal/gochk/xxx_internal_test.go`.
 
 Finally, please make a pull request of it.
+
+## Release Notes
+
+[Release Notes](https://github.com/resotto/gochk/blob/master/CHANGELOG.md)
 
 ## License
 
