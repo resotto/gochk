@@ -18,6 +18,7 @@ jobs:
         run: |
           echo "public_repo_name=$(curl https://api.github.com/users/${{ github.repository_owner }}/repos | jq '.[]["full_name"] | select(. | contains("${{ github.repository }}"))')" >> $GITHUB_ENV
           echo $public_repo_name
+      - uses: actions/setup-go@v2
   test:
     needs: setup
     runs-on: ubuntu-latest
