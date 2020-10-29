@@ -20,7 +20,7 @@ jobs:
           echo "::set-env name=PUBLIC_REPO_NAME::$PUBLIC_REPO_NAME"
           echo "$PUBLIC_REPO_NAME, {{ env.PUBLIC_REPO_NAME }}"
       - name: set goprivate if this repo is private
-        if: ${{ env.PUBLIC_REPO_NAME == "" }}
+        if: ${{ env.PUBLIC_REPO_NAME }} == ""
         run: |
           go env -w GOPRIVATE=github.com/{{ github.repository }}
   test:
