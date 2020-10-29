@@ -32,7 +32,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Run golint, go vet, and go test
         run: |
-          go vet -v ./...
+          go get -u golang.org/x/lint/golint
+          golint -set_exit_status
           cd internal/gochk
           ls
           go test -v ./...
