@@ -16,14 +16,14 @@ jobs:
     steps:
       - name: check this repo is private or not
         run: |
-          echo "public_repo_name=$(curl https://api.github.com/users/resotto/repos | jq '.[]["full_name"] | select(. | contains("${{ github.repository }}"))')" >> $GITHUB_ENV
+          echo "public_repo_name=$(curl https://api.github.com/users/${{ github.repository_owner }}/repos | jq '.[]["full_name"] | select(. | contains("${{ github.repository }}"))')" >> $GITHUB_ENV
           echo $public_repo_name
   test:
     needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: set goprivate if this repo is private
-        if: $public_repo_name == ""
+        if: public_repo_name == ""
         run: |
           go env -w GOPRIVATE=github.com/${{ github.repository }}
           go env GOPRIVATE
