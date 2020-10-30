@@ -88,13 +88,13 @@ go run ../cmd/gochk/main.go -t=../../goilerplate -c=../configs/config.json
 
 ## Installation
 
-First of all, let's check whether `GOPATH` is set or not:
+First of all, let's check `GOPATH` has already been set:
 
 ```zsh
 go env GOPATH
 ```
 
-And then, please check whether `${GOPATH}/bin` is included in your `$PATH`:
+And then, please confirm that `${GOPATH}/bin` is included in your `$PATH`:
 
 ```zsh
 echo $PATH
@@ -105,7 +105,6 @@ Finally, please install Gochk:
 ```zsh
 cd cmd/gochk
 go install
-# gochk -t=../../../goilerplate -c=../../configs/config.json
 ```
 
 ## How Gochk works
@@ -117,7 +116,7 @@ go install
   - goreturns
   - gofumports
 - If you have files with following file path or import path, Gochk might not work well.
-  - The path including the two directory names specified in `dependencyOrders` in `gochk/configs/config.json`.
+  - The path including the two directory names specified in `dependencyOrders` of `gochk/configs/config.json`.
     - For example, if you have the path `app/external/adapter/service` and want to handle this path as what is in `adapter`, and `dependencyOrders = ["external", "adapter"]`, the index of the path will be `0` (not `1`).
 
 ### What Gochk does
@@ -139,7 +138,7 @@ For example, if an usecase in "Use Cases" imports (depends on) what is in "Contr
 
 Firstly, Gochk fetchs the file path and gets the index of `dependencyOrders` in `gochk/configs/config.json` if one of them is included in the file path.
 
-Second, Gochk reads the file, parses import paths, and also gets the index of `dependencyOrders` if matched.
+Secondly, Gochk reads the file, parses import paths, and also gets the indices of `dependencyOrders` if matched.
 
 And then, Gochk compares those indices and detects violation **if the index of the import path is smaller than that of the file path**.
 
@@ -315,6 +314,15 @@ func printConcurrently(results []CheckResult) {
 	}
 	wg.Wait()
 }
+```
+
+### Changing Default Target Path and Config Path
+
+You can modify default target path and config path in main.go:
+
+```go
+targetPath := flag.String("t", "." /* default path */, "target path")
+configPath := flag.String("c", "configs/config.json" /* default path */, "configuration file path")
 ```
 
 ## Unit Testing
@@ -506,7 +514,7 @@ From Gochk root directory `${GOPATH}/src/github.com/resotto/gochk`, please run:
 docker build -t gochk:latest -f build/Dockerfile .
 ```
 
-Or you can also pull the image fron GitHub Container Registry:
+Or you can also pull the image from GitHub Container Registry:
 
 ```zsh
 docker pull ghcr.io/resotto/gochk:latest
