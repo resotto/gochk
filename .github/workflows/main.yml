@@ -38,7 +38,13 @@ jobs:
           $(go env GOPATH)/bin/golint -set_exit_status
           cd internal/gochk
           ls
-          go test -v ./...
+          go test -v ./... -coverprofile=cover.out
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          file: ./cover.out # optional
+          flags: unittests # optional
+          verbose: true # optional (default = false)
 
   build_and_push_to_ghcr:
     needs: test
