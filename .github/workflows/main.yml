@@ -42,10 +42,11 @@ jobs:
           go test -v ./... | $(go env GOPATH)/bin/go-junit-report > report.xml
           ls
           pwd
+          echo "${{ github.workspace }}"
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          file: .internal/gochk/report.xml # optional
+          file: ${{ github.workspace }}/gochk/gochk/internal/gochk/report.xml # optional
           flags: unittests # optional
           verbose: true # optional (default = false)
 
