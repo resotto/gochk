@@ -7,7 +7,7 @@ on:
     tags:
       - v*
     paths-ignore:
-      - '**/README.md'
+      - "**/README.md"
   pull_request:
     branches:
       - master
@@ -38,11 +38,12 @@ jobs:
           $(go env GOPATH)/bin/golint -set_exit_status
           cd internal/gochk
           ls
-          go test -v ./... -coverprofile=coverage.txt
+          go get -u github.com/jstemmer/go-junit-report
+          go test -v ./... | $(go env GOPATH)/bin/go-junit-report > report.xml
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          file: ./coverage.txt # optional
+          file: ./report.xml # optional
           flags: unittests # optional
           verbose: true # optional (default = false)
 
