@@ -296,7 +296,7 @@ func newWarning(message string) CheckResult {
 }
 ```
 
-### Tuning the number of goroutine
+### Tuning the Number of Goroutine
 
 If `printViolationsAtTheBottom` is `false`, Gochk prints results with goroutine.
 
