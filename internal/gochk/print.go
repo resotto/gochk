@@ -24,12 +24,7 @@ func Show(results []CheckResult, violated bool, printViolationsAtTheBottom bool)
 	} else {
 		printConcurrently(results)
 	}
-	if violated {
-		log.Fatal("Dependencies which violate dependency orders found!")
-	} else {
-		log.Print("No violations")
-		printAA()
-	}
+	log.Fatal("Dependencies which violate dependency orders found!")
 }
 
 func printConcurrently(results []CheckResult) {
