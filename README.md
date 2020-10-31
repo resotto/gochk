@@ -50,6 +50,7 @@ Why Gochk?
 - [Contributing](#contributing)
 - [Release Notes](#release-notes)
 - [License](#license)
+- [Author](#author)
 
 ## Getting Started
 
@@ -606,3 +607,10 @@ Finally, please make a pull request of it.
 ## License
 
 [MIT License](https://github.com/resotto/gochk/blob/master/LICENSE).
+
+## Author
+
+Resotto
+
+<a href="https://github.com/resotto"><img src="https://user-images.githubusercontent.com/19743841/97777703-54c29180-1bb5-11eb-8175-b1d5fa29ef0c.png" /></a>
+<a href="https://twitter.com/resotto3"><img src="https://user-images.githubusercontent.com/19743841/97777698-52f8ce00-1bb5-11eb-93c9-b06e0c48b693.png" /></a>
