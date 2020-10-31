@@ -41,7 +41,7 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          file: ${{ github.workspace }}/report.xml # optional
+          file: ./report.xml # optional
           flags: unittests # optional
           verbose: true # optional (default = false)
 
