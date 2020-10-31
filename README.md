@@ -612,5 +612,5 @@ Finally, please make a pull request of it.
 
 Resotto
 
-<a href="https://github.com/resotto"><img src="https://user-images.githubusercontent.com/19743841/97777703-54c29180-1bb5-11eb-8175-b1d5fa29ef0c.png" /></a>
+<a href="https://github.com/resotto"><img src="https://user-images.githubusercontent.com/19743841/97778118-4629a980-1bb8-11eb-97ed-76dcdbe50406.png" /></a>
 <a href="https://twitter.com/resotto3"><img src="https://user-images.githubusercontent.com/19743841/97777698-52f8ce00-1bb5-11eb-93c9-b06e0c48b693.png" /></a>
