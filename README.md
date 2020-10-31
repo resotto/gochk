@@ -145,7 +145,8 @@ Secondly, Gochk reads the file, parses import paths, and also gets the indices o
 
 And then, Gochk compares those indices and detects violation **if the index of the import path is smaller than that of the file path**.
 
-For example, if you have a file `app/application/usecase/xxx.go` with import path `"app/adapter/service"` and `dependencyOrders = ["adapter", "application"]`, the index of the file is `1` and the index of its import is `0`. Therefore, the file violates dependency rule since the inequality `0 (the index of the import path) < 1 (the index of the file path)` is established.
+For example, if you have a file `app/application/usecase/xxx.go` with import path `"app/adapter/service"` and `dependencyOrders = ["adapter", "application"]`, the index of the file is `1` and the index of its import is `0`.  
+Therefore, the file violates dependency rule since the inequality `0 (the index of the import path) < 1 (the index of the file path)` is established.
 
 ## How to see results
 
@@ -177,7 +178,7 @@ If you see the following AA, congrats! there are no violations🎉
 Gochk displays each result type in a different color by default:
 
 - ![#008080](https://via.placeholder.com/15/008080/000000?text=+) None
-  - which means there are imports irrelevant to dependency rule or no imports at all
+  - which means there are imports irrelevant to dependency rule or no imports at all.
 - ![#008000](https://via.placeholder.com/15/008000/000000?text=+) Verified
   - which means there are dependencies with no violation.
 - ![#FFFF00](https://via.placeholder.com/15/FFFF00/000000?text=+) Ignored
@@ -215,6 +216,17 @@ For `Violated`, it displays the file path, its dependency, and how it violates d
 ```
 
 ## Configuration
+
+### Changing Default Target Path and Config Path
+
+You can modify default target path and config path in main.go:
+
+```go
+targetPath := flag.String("t", "." /* default path */, "target path")
+configPath := flag.String("c", "configs/config.json" /* default path */, "configuration file path")
+```
+
+### config.json
 
 `gochk/configs/config.json` has configuration values.
 
@@ -319,15 +331,6 @@ func printConcurrently(results []CheckResult) {
 }
 ```
 
-### Changing Default Target Path and Config Path
-
-You can modify default target path and config path in main.go:
-
-```go
-targetPath := flag.String("t", "." /* default path */, "target path")
-configPath := flag.String("c", "configs/config.json" /* default path */, "configuration file path")
-```
-
 ## Unit Testing
 
 Unit test files are located in `gochk/internal/gochk`.
@@ -345,20 +348,16 @@ gochk
 So you can do unit test like:
 
 ```zsh
-cd internal/gochk
-```
-
-```zsh
-~/go/src/github.com/resotto/gochk/internal/gochk (master) > go test ./... # Please specify -v if you need detailed outputs
+~/go/src/github.com/resotto/gochk (master) > go test ./internal/gochk/... # Please specify -v if you need detailed outputs
 ok      github.com/resotto/gochk/internal/gochk (cached)
 ```
 
 You can also clean test cache with `go clean -testcache`.
 
 ```zsh
-~/go/src/github.com/resotto/gochk/internal/gochk (master) > go clean -testcache
-~/go/src/github.com/resotto/gochk/internal/gochk (master) > go test ./...
-ok      github.com/resotto/gochk/internal/gochk 0.065s # Not cache
+~/go/src/github.com/resotto/gochk (master) > go clean -testcache
+~/go/src/github.com/resotto/gochk (master) > go test ./internal/gochk/...
+ok      github.com/resotto/gochk/internal/gochk 0.092s # Not cache
 ```
 
 ## Performance Test
@@ -375,12 +374,8 @@ gochk
 Thus, you can do performance test as follows. It will take few minutes.
 
 ```zsh
-cd test/performance
-```
-
-```zsh
-~/go/src/github.com/resotto/gochk/test/performance (master) > go test ./...
-ok      github.com/resotto/gochk/test/performance       64.661s
+~/go/src/github.com/resotto/gochk (master) > go test ./test/performance/...
+ok      github.com/resotto/gochk/test/performance       61.705s
 ```
 
 ### Test Contents
@@ -415,10 +410,10 @@ gochk
     │   └── external        # Test directory
     │       ...             # Test files (g0.go ~ g9999.go)
     └── testdata
-        ├── adapter.txt     # original file of performance/adapter/gX.go
-        ├── application.txt # original file of performance/application/gX.go
-        ├── domain.txt      # original file of performance/domain/gX.go
-        └── external.txt    # original file of performance/external/gX.go
+        ├── adapter.txt     # Original file of performance/adapter/gX.go
+        ├── application.txt # Original file of performance/application/gX.go
+        ├── domain.txt      # Original file of performance/domain/gX.go
+        └── external.txt    # Original file of performance/external/gX.go
 ```
 
 For each file, it imports standard libraries and dependencies like:
@@ -437,9 +432,9 @@ import (
     "github.com/resotto/gochk/test/performance/adapter/view"             // import this up to adapter
     "github.com/resotto/gochk/test/performance/application/service"      // import this up to application
     "github.com/resotto/gochk/test/performance/application/usecase"      // import this up to application
-    "github.com/resotto/gochk/test/performance/domain/factory"           // import this in only domain
-    "github.com/resotto/gochk/test/performance/domain/repository"        // import this in only domain
-    "github.com/resotto/gochk/test/performance/domain/valueobject"       // import this in only domain
+    "github.com/resotto/gochk/test/performance/domain/factory"           // import this only in domain
+    "github.com/resotto/gochk/test/performance/domain/repository"        // import this only in domain
+    "github.com/resotto/gochk/test/performance/domain/valueobject"       // import this only in domain
     "github.com/resotto/gochk/test/performance/external"                 // import this up to adapter
 )
 ```
@@ -580,7 +575,7 @@ jobs:
 
 ## Feedback
 
-- [Feel free to write your thoughts](https://github.com/resotto/gochk/issues/1)
+- [Feel free to write your thoughts](https://github.com/resotto/gochk/issues/1).
 - Report a bug to [Bug report](https://github.com/resotto/gochk/issues/2).
 
 ## Contributing
@@ -598,7 +593,7 @@ Secondly, you must have the following tools and settings on your IDE:
 - lint on save for `package`
 - vet on save for `package`
 
-After satisfing the above, please make a branch with `{ISSUE_NUMBER}.{SUMMARY}`
+After satisfing the above, please make a branch with `{ISSUE_NUMBER}.{SUMMARY}`.
 
 You MUST also fix/add unit tests of your implementation in `internal/gochk/xxx_internal_test.go`.
 
