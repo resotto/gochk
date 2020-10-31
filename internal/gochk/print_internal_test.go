@@ -9,6 +9,7 @@ func TestShow(t *testing.T) {
 	testNames := []string{
 		"violated and don't printViolationsAtTheBottom",
 		"not violated and printViolationsAtTheBottom",
+		"not violated and don't printViolationsAtTheBottom",
 	}
 	tests := []struct {
 		name                       string
@@ -24,6 +25,15 @@ func TestShow(t *testing.T) {
 			},
 			false,
 			true,
+		},
+		{
+			testNames[2],
+			[]CheckResult{
+				newNone("test message"),
+				newNone("test message"),
+			},
+			false,
+			false,
 		},
 	}
 	for _, tt := range tests {
@@ -65,7 +75,7 @@ func TestPrintConcurrently(t *testing.T) {
 					t.Errorf("%s shouldn't create panic", tt.name)
 				}
 			}()
-			printSequentially(tt.crs)
+			printConcurrently(tt.crs)
 		})
 	}
 }
