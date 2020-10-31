@@ -36,14 +36,12 @@ jobs:
         run: |
           go get -u golang.org/x/lint/golint
           $(go env GOPATH)/bin/golint -set_exit_status
-          cd internal/gochk
-          ls
           go get -u github.com/jstemmer/go-junit-report
-          go test -v ./... | $(go env GOPATH)/bin/go-junit-report > report.xml
+          go test -v ./internal/... | $(go env GOPATH)/bin/go-junit-report > report.xml
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          file: ${{ github.workspace }}/internal/gochk/report.xml # optional
+          file: ${{ github.workspace }}/report.xml # optional
           flags: unittests # optional
           verbose: true # optional (default = false)
 
