@@ -610,4 +610,4 @@ Finally, please make a pull request of it.
 
 ## License
 
-[GNU General Public License v3.0](https://github.com/resotto/gochk/blob/master/LICENSE).
+[MIT License](https://github.com/resotto/gochk/blob/master/LICENSE).
