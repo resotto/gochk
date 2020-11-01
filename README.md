@@ -24,20 +24,20 @@
 
 What is Gochk?
 
-- Gochk checks whether .go files violate [Clean Architecture The Dependency Rule](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule) or not, and prints its results.
+- Gochk analyzes whether .go files violate [Clean Architecture The Dependency Rule](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule) or not statically, and prints its results.
 
   > This rule says that source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle.
 
 What problem does Gochk solve?
 
-- When Go codebase with Clean-Architecute (or Layered-Architecture) becomes larger, it might be Big Ball Of Mud by The Dependency Rule violation. With Gochk, even when the codebase gets bigger, it keeps clean codes.
+- When Go codebase with Clean-Architecute (or Layered-Architecture) becomes larger, it might be Big Ball Of Mud by the Dependency Rule violation, and Gochk detects them.
 
 When to apply Gochk to codebase?
 
-- Preferably, when codebase is as small as possible with Gochk exit mode `true`.
-  - which means Gochk exits with `1` when violations occur so you can detect violation in early stage and keep codes clean.
-- If codebase is big, Gochk can be applied to it with Gochk exit mode `false`.
-  - which means Gochk won't exit even when violations occur so you can just check whether it violates or not and refactor it to keep less violations.
+- **Preferably, when codebase is as small as possible.**
+  - In this phase, you can use Gochk with exit mode `true` which means Gochk fails with exit code `1` when violations occur. So you can detect violation in early stage and keep codes clean.
+- **If codebase is big, Gochk can be applied to it with exit mode `false`.**
+  - Which means Gochk will complete its process even when violations occur. Thus you can just check whether it violates Dependency Rule or not and refactor it to keep less violations.
 
 Who are the main users of Gochk?
 
