@@ -600,7 +600,7 @@ jobs:
 
 <a href="https://www.contributor-covenant.org/version/2/0/code_of_conduct/"><img src="https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg" /></a>
 
-See [Contricution Guide](#https://github.com/resotto/gochk/blob/master/CONTRIBUTING.md).
+See [Contribution Guide](https://github.com/resotto/gochk/blob/master/CONTRIBUTING.md).
 
 ## Release Notes
 
