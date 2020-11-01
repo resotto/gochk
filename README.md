@@ -598,26 +598,9 @@ jobs:
 
 ## Contributing
 
-I appreciate your help.
+<a href="https://www.contributor-covenant.org/version/2/0/code_of_conduct/"><img src="https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg" /></a>
 
-1. First, please write your issue(proposal) in [Gochk issues](https://github.com/resotto/gochk/issues).
-
-1. Secondly, you must have the following tools and settings on your IDE:
-
-   - `godoc` for docs
-   - `goreturns` for format
-   - `golint` for lint
-   - build on save for `package`
-   - lint on save for `package`
-   - vet on save for `package`
-
-1. After satisfing the above, please make a branch with `{ISSUE_NUMBER}.{SUMMARY}`.
-
-1. You MUST also fix/add unit tests of your implementation in `internal/gochk/xxx_internal_test.go`.
-
-1. Finally, please make a pull request of it.
-
-If you contribute documents, step 2 & 4 above might be skipped.
+See [Contricution Guide](#https://github.com/resotto/gochk/blob/master/CONTRIBUTING.md).
 
 ## Release Notes
 
