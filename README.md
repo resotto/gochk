@@ -24,7 +24,7 @@
 
 What is Gochk?
 
-- Gochk analyzes whether .go files violate [Clean Architecture The Dependency Rule](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule) or not statically, and prints its results.
+- Gochk analyzes statically whether .go files violate [Clean Architecture The Dependency Rule](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule) or not, and prints its results.
 
   > This rule says that source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle.
 
@@ -37,9 +37,9 @@ When to apply Gochk to codebase?
 - **Preferably, it is when the codebase is as small as possible.**
   - In this phase, you can use Gochk with `-e=true` which means Gochk fails with exit code `1` when violations occur. So you can detect violations thoroughly and keep codes clean.
 - **If codebase is big, Gochk can be applied to it with `-e=false`.**
-  - Which means Gochk will complete its process even when violations occur. Thus you can just check whether it violates Dependency Rule or not and refactor it to keep less violations.
+  - Which means Gochk will complete its process even when violations occur. Thus you can just check whether it violates Dependency Rule or not and refactor it to have less violations.
 
-Who are the main users of Gochk?
+Who is the main user of Gochk?
 
 - Go Developer
 
@@ -247,7 +247,7 @@ For `Violated`, it displays the file path, its dependency, and how it violates d
 You can modify default target path, config path, and exit mode in main.go:
 
 ```go
-exitMode := flag.Bool("e", false /* default value */, "flag whether exits with 1 or not when violations occur. (false is default)")
+exitMode := flag.Bool("e", false /* default value */, "flag whether Gochk exits with 1 or not when violations occur. (false is default)")
 targetPath := flag.String("t", "." /* default value */, "target path (\".\" is default)")
 configPath := flag.String("c", "configs/config.json" /* default value */, "configuration file path (\"configs/config.json\" is default)")
 ```

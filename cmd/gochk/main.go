@@ -26,7 +26,7 @@ import (
 )
 
 func main() {
-	exitMode := flag.Bool("e", false, "flag whether exits with 1 or not when violations occur. (false is default)")
+	exitMode := flag.Bool("e", false, "flag whether Gochk exits with 1 or not when violations occur. (false is default)")
 	targetPath := flag.String("t", ".", "target path (\".\" is default)")
 	configPath := flag.String("c", "configs/config.json", "configuration file path (\"configs/config.json\" is default)")
 	flag.Parse()
