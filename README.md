@@ -8,6 +8,7 @@
   <a href="https://goreportcard.com/report/github.com/resotto/gochk"><img src="https://goreportcard.com/badge/github.com/resotto/gochk"></a>
   <a href="https://bestpractices.coreinfrastructure.org/projects/4380"><img src="https://bestpractices.coreinfrastructure.org/projects/4380/badge"></a>
   <a href="https://pkg.go.dev/github.com/resotto/gochk?tab=overview"><img src="https://pkg.go.dev/badge/github.com/resotto/gochk" alt="PkgGoDev"></a>
+  <a href="https://github.com/resotto/gochk/issues/1"><img src="https://img.shields.io/badge/chat-on%20issue-yellow"></a>
   <a href="https://github.com/resotto/gochk/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
 </p>
 
