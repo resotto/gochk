@@ -27,6 +27,23 @@ What is Gochk?
 
   > This rule says that source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle.
 
+What problem does Gochk solve?
+
+- When Go codebase with Clean-Architecute (or Layered-Architecture) becomes larger, it might be Big Ball Of Mud by The Dependency Rule violation. With Gochk, even when the codebase gets bigger, it keeps clean codes.
+
+When to apply Gochk to codebase?
+
+- Preferably, when codebase is as small as possible with Gochk exit mode `true`.
+  - which means Gochk exits with `1` when violations occur so you can detect violation in early stage and keep codes clean.
+- If codebase is big, Gochk can be applied to it with Gochk exit mode `false`.
+  - which means Gochk won't exit even when violations occur so you can just check whether it violates or not and refactor it to keep less violations.
+
+Who are the main users of Gochk?
+
+- Go Developer, Go Software Engineer
+- Go Tech Lead
+- Go DevOps Engineer
+
 Why Gochk?
 
 - **ZERO Dependency**
@@ -583,22 +600,24 @@ jobs:
 
 I appreciate your help.
 
-First, please write your issue(proposal) in [Gochk issues](https://github.com/resotto/gochk/issues).
+1. First, please write your issue(proposal) in [Gochk issues](https://github.com/resotto/gochk/issues).
 
-Secondly, you must have the following tools and settings on your IDE:
+1. Secondly, you must have the following tools and settings on your IDE:
 
-- `godoc` for docs
-- `goreturns` for format
-- `golint` for lint
-- build on save for `package`
-- lint on save for `package`
-- vet on save for `package`
+   - `godoc` for docs
+   - `goreturns` for format
+   - `golint` for lint
+   - build on save for `package`
+   - lint on save for `package`
+   - vet on save for `package`
 
-After satisfing the above, please make a branch with `{ISSUE_NUMBER}.{SUMMARY}`.
+1. After satisfing the above, please make a branch with `{ISSUE_NUMBER}.{SUMMARY}`.
 
-You MUST also fix/add unit tests of your implementation in `internal/gochk/xxx_internal_test.go`.
+1. You MUST also fix/add unit tests of your implementation in `internal/gochk/xxx_internal_test.go`.
 
-Finally, please make a pull request of it.
+1. Finally, please make a pull request of it.
+
+If you contribute documents, step 2 & 4 above might be skipped.
 
 ## Release Notes
 
