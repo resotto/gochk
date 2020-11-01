@@ -34,16 +34,14 @@ What problem does Gochk solve?
 
 When to apply Gochk to codebase?
 
-- **Preferably, when codebase is as small as possible.**
-  - In this phase, you can use Gochk with exit mode `true` which means Gochk fails with exit code `1` when violations occur. So you can detect violation in early stage and keep codes clean.
-- **If codebase is big, Gochk can be applied to it with exit mode `false`.**
+- **Preferably, it is when the codebase is as small as possible.**
+  - In this phase, you can use Gochk with `-e=true` which means Gochk fails with exit code `1` when violations occur. So you can detect violations thoroughly and keep codes clean.
+- **If codebase is big, Gochk can be applied to it with `-e=false`.**
   - Which means Gochk will complete its process even when violations occur. Thus you can just check whether it violates Dependency Rule or not and refactor it to keep less violations.
 
 Who are the main users of Gochk?
 
-- Go Developer, Go Software Engineer
-- Go Tech Lead
-- Go DevOps Engineer
+- Go Developer
 
 Why Gochk?
 
@@ -108,6 +106,12 @@ cd internal
 go run ../cmd/gochk/main.go -t=../../goilerplate -c=../configs/config.json
 ```
 
+Moreover, if you want to exit with `1` when violations occur, please specify `-e=true` (default `false`):
+
+```zsh
+go run ../cmd/gochk/main.go -t=../../goilerplate -c=../configs/config.json -e=true
+```
+
 ## Installation
 
 First of all, let's check `GOPATH` has already been set:
@@ -165,7 +169,9 @@ Secondly, Gochk reads the file, parses import paths, and also gets the indices o
 And then, Gochk compares those indices and detects violation **if the index of the import path is smaller than that of the file path**.
 
 For example, if you have a file `app/application/usecase/xxx.go` with import path `"app/adapter/service"` and `dependencyOrders = ["adapter", "application"]`, the index of the file is `1` and the index of its import is `0`.  
-Therefore, the file violates dependency rule since the inequality `0 (the index of the import path) < 1 (the index of the file path)` is established.
+Therefore, the file violates dependency rule since the following inequality is established:
+
+- `0 (the index of the import path) < 1 (the index of the file path)`
 
 ## How to see results
 
@@ -236,13 +242,14 @@ For `Violated`, it displays the file path, its dependency, and how it violates d
 
 ## Configuration
 
-### Changing Default Target Path and Config Path
+### Changing Default Target Path, Config Path, and Exit Mode
 
-You can modify default target path and config path in main.go:
+You can modify default target path, config path, and exit mode in main.go:
 
 ```go
-targetPath := flag.String("t", "." /* default path */, "target path")
-configPath := flag.String("c", "configs/config.json" /* default path */, "configuration file path")
+exitMode := flag.Bool("e", false /* default value */, "flag whether exits with 1 or not when violations occur. (false is default)")
+targetPath := flag.String("t", "." /* default value */, "target path (\".\" is default)")
+configPath := flag.String("c", "configs/config.json" /* default value */, "configuration file path (\"configs/config.json\" is default)")
 ```
 
 ### config.json

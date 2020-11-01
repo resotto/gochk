@@ -3,6 +3,7 @@ package gochk
 import (
 	"fmt"
 	"log"
+	"os"
 	"sync"
 )
 
@@ -18,14 +19,17 @@ const (
 )
 
 // Show prints results
-func Show(results []CheckResult, violated bool, printViolationsAtTheBottom bool) {
+func Show(results []CheckResult, violated bool, printViolationsAtTheBottom bool, exitMode bool) {
 	if printViolationsAtTheBottom {
 		printSequentially(results)
 	} else {
 		printConcurrently(results)
 	}
 	if violated {
-		log.Fatal("Dependencies which violate dependency orders found!")
+		log.Print("Dependencies which violate dependency orders found!")
+		if exitMode {
+			os.Exit(1)
+		}
 	} else {
 		log.Print("No violations")
 		printAA()

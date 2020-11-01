@@ -7,24 +7,26 @@ import (
 
 func TestShow(t *testing.T) {
 	testNames := []string{
-		"violated and don't printViolationsAtTheBottom",
-		"not violated and printViolationsAtTheBottom",
-		"not violated and don't printViolationsAtTheBottom",
+		"violated and don't printViolationsAtTheBottom with exitMode true",
+		"violated and printViolationsAtTheBottom with exitMode false",
+		"not violated and don't printViolationsAtTheBottom with exitMode false",
 	}
 	tests := []struct {
 		name                       string
 		results                    []CheckResult
 		violated                   bool
 		printViolationsAtTheBottom bool
+		exitMode                   bool
 	}{
 		{
 			testNames[1],
 			[]CheckResult{
-				newNone("test message"),
-				newNone("test message"),
+				newViolated("test message"),
+				newViolated("test message"),
 			},
-			false,
 			true,
+			true,
+			false,
 		},
 		{
 			testNames[2],
@@ -32,6 +34,7 @@ func TestShow(t *testing.T) {
 				newNone("test message"),
 				newNone("test message"),
 			},
+			false,
 			false,
 			false,
 		},
@@ -46,7 +49,7 @@ func TestShow(t *testing.T) {
 					t.Errorf("%s shouldn't create panic", tt.name)
 				}
 			}()
-			Show(tt.results, tt.violated, tt.printViolationsAtTheBottom)
+			Show(tt.results, tt.violated, tt.printViolationsAtTheBottom, tt.exitMode)
 		})
 	}
 }

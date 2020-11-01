@@ -26,10 +26,11 @@ import (
 )
 
 func main() {
-	targetPath := flag.String("t", ".", "target path")
-	configPath := flag.String("c", "configs/config.json", "configuration file path")
+	exitMode := flag.Bool("e", false, "flag whether exits with 1 or not when violations occur. (false is default)")
+	targetPath := flag.String("t", ".", "target path (\".\" is default)")
+	configPath := flag.String("c", "configs/config.json", "configuration file path (\"configs/config.json\" is default)")
 	flag.Parse()
 	config := gochk.ParseConfig(*configPath)
 	results, violated := gochk.Check(*targetPath, config)
-	gochk.Show(results, violated, config.PrintViolationsAtTheBottom)
+	gochk.Show(results, violated, config.PrintViolationsAtTheBottom, *exitMode)
 }
