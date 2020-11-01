@@ -36,8 +36,8 @@ When to apply Gochk to codebase?
 
 - **Preferably, it is when the codebase is as small as possible.**
   - In this phase, you can use Gochk with `-e=true` which means Gochk fails with exit code `1` when violations occur. So you can detect violations thoroughly and keep codes clean.
-- **If codebase is big, Gochk can be applied to it with `-e=false`.**
-  - Which means Gochk will complete its process even when violations occur. Thus you can just check whether it violates Dependency Rule or not and refactor it to have less violations.
+- **If codebase is big, Gochk can also be applied to it.**
+  - You can just check whether it violates Dependency Rule or not and refactor it to have less violations.
 
 Who is the main user of Gochk?
 
