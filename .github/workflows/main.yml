@@ -39,7 +39,7 @@ jobs:
           $(go env GOPATH)/bin/golint -set_exit_status
           go get -u github.com/jstemmer/go-junit-report
           go test -race -v -covermode=atomic -coverprofile=coverage.txt ./internal/...
-          bash <(curl -s https://codecov.io/bash) -t ${{ secrets.CODECOV_TOKEN }}
+          bash <(curl -s https://codecov.io/bash) -t ${{ secrets.CODECOV_TOKEN }} || echo 'Codecov failed to upload'
   build_and_push_to_ghcr:
     needs: test
     runs-on: ubuntu-latest
