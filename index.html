@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Gochk is static dependency analysis tool for go files. Gochk analyzes statically whether .go files violate Clean Architecture The Dependency Rule or not, and prints its results.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="og:title" property="og:title" content="Gochk - Static Dependency Analysis Tool for Go Files">
+    <meta name="og:type" property="og:type" content="website">
+    <meta name="og:description" property="og:description" content="Gochk is static dependency analysis tool for go files. Gochk analyzes statically whether .go files violate Clean Architecture The Dependency Rule or not, and prints its results.">
+    <meta name="og:image" property="og:image" content="https://user-images.githubusercontent.com/19743841/97435499-d7541280-1963-11eb-80e1-70d3d80f30cc.png">
+    <meta name="twitter:card" content="Gochk - Static Dependency Analysis Tool for Go Files">
+    <meta name="twitter:creator" content="@resotto3">
+    <title>Gochk - Static Dependency Analysis Tool for Go Files</title>
+    <style>
+        h1, h2, p, ul {
+            text-align: center;
+            margin-block-start: 0em;
+            margin-block-end: 0em;
+        }
+        h2 {
+            padding: 30px 0 40px 0
+        }
+        div {
+            padding: 50px 0
+        }
+        body {
+            font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            width: 100%;
+            height: 100%;
+            border: 0px;
+            padding: 0 0 0 0;
+            margin: 0 0 0 0;
+        }
+        .mini {
+            width: 40%;
+            height: 40%;
+        }
+    </style>
+  </head>
+  <body>
+    <h1>Gochk</p>
+    <div style="background-color: #FAFAFA">
+      <h2>Static Dependency Analysis Tool for Go Files</h2>
+      <p>
+        <img class="mini" src="https://user-images.githubusercontent.com/19743841/97435499-d7541280-1963-11eb-80e1-70d3d80f30cc.png" alt="Gochk Logo"/>
+      </p>
+      <p>
+        <img src="https://user-images.githubusercontent.com/19743841/97001249-0983ff80-1573-11eb-818f-9bdbffe8f762.gif" alt="Gochk Demo Gif">
+      </p>
+    </div>
+    <div style="background-color: #FFFBF6">
+      <h2>What is Gochk?</h2>
+      <p>
+        Gochk analyzes statically whether .go files violate Clean Architecture The Dependency Rule or not, and prints its results.
+        <blockquote cite="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule">
+          <p>This rule says that source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle.</p>
+          <footer>ref: <cite><a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html#the-dependency-rule">The Clean Architecture</a></cite></footer>
+        </blockquote>
+      </p>
+      <h2>What problem does Gochk solve?</h2>
+      <p>
+        When Go codebase with Clean-Architecute (or Layered-Architecture) becomes larger, it might be Big Ball Of Mud by the Dependency Rule violation, and Gochk detects them.
+      </p>
+      <h2>Why Gochk?</h2>
+      <ul>
+        <li><strong>ZERO Dependency</strong></li>
+        <li>Simple & Easy-to-Read Outputs</li>
+      </ul>
+    </div>
+    <div style="background-color: #FFF6FE">
+      <h2>Getting Started!</h2>
+      <p>
+        <a href="https://github.com/resotto/gochk">
+          <img src="https://user-images.githubusercontent.com/19743841/97945380-bb6cc880-1dca-11eb-8549-b283836cdc4e.png" alt="Github Official Logo"/>
+        </a>
+      </p>
+    </div>
+  </body>
+</html>
