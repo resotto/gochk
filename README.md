@@ -624,4 +624,4 @@ Resotto
 
 <a href="https://github.com/resotto"><img src="https://user-images.githubusercontent.com/19743841/97778118-4629a980-1bb8-11eb-97ed-76dcdbe50406.png" /></a>
 <a href="https://twitter.com/resotto3"><img src="https://user-images.githubusercontent.com/19743841/97777698-52f8ce00-1bb5-11eb-93c9-b06e0c48b693.png" /></a>
-<a class="github-button" href="https://github.com/sponsors/resotto" data-icon="octicon-heart" aria-label="Sponsor @resotto on GitHub">Sponsor</a>
+<a href="https://github.com/sponsors/resotto"><img src="https://img.shields.io/badge/Sponsor-ffffff?logo=github&logoColor=pink&style=flat-square" /></a>
