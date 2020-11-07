@@ -30,7 +30,7 @@ What is Gochk?
 
 What problem does Gochk solve?
 
-- When Go codebase with Clean-Architecture (or Layered-Architecture) becomes larger, it might be Big Ball Of Mud by the Dependency Rule violation, and Gochk detects them.
+- When Go codebase with Clean Architecture (or Layered Architecture) becomes larger, it might be Big Ball Of Mud by the Dependency Rule violation, and Gochk detects them.
 
 When to apply Gochk to codebase?
 
