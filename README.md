@@ -18,6 +18,7 @@
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/19743841/97001249-0983ff80-1573-11eb-818f-9bdbffe8f762.gif">
+  <a href="https://asciinema.org/a/371171" target="_blank"><img src="https://asciinema.org/a/371171.svg" /></a>
 </p>
 
 ---
