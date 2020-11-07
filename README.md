@@ -30,7 +30,7 @@ What is Gochk?
 
 What problem does Gochk solve?
 
-- When Go codebase with Clean-Architecute (or Layered-Architecture) becomes larger, it might be Big Ball Of Mud by the Dependency Rule violation, and Gochk detects them.
+- When Go codebase with Clean-Architecture (or Layered-Architecture) becomes larger, it might be Big Ball Of Mud by the Dependency Rule violation, and Gochk detects them.
 
 When to apply Gochk to codebase?
 
@@ -162,7 +162,7 @@ For example, if an usecase in "Use Cases" imports (depends on) what is in "Contr
 
 ### Check Logic
 
-Firstly, Gochk fetchs the file path and gets the index of `dependencyOrders` in `gochk/configs/config.json` if one of them is included in the file path.
+Firstly, Gochk fetches the file path and gets the index of `dependencyOrders` in `gochk/configs/config.json` if one of them is included in the file path.
 
 Secondly, Gochk reads the file, parses import paths, and also gets the indices of `dependencyOrders` if matched.
 
@@ -277,7 +277,7 @@ configPath := flag.String("c", "configs/config.json" /* default value */, "confi
 
 - `ignore` has the paths ignored by Gochk, which can be file path or dir path.
 
-  - If you have the directory you want to ignore, **specifing them might improve the performance of Gochk since it returns `filepath.SkipDir`**.
+  - If you have the directory you want to ignore, **specifying them might improve the performance of Gochk since it returns `filepath.SkipDir`**.
 
 ```go
 // read.go
