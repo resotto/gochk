@@ -1,10 +1,13 @@
 package gochk
 
-import "strings"
+import (
+	"go/ast"
+	"strings"
+)
 
-func setResultType(results *[]CheckResult, dependencyOrders []string, path string) bool {
+func setResultType(results *[]CheckResult, dependencyOrders []string, path string, iSpec []*ast.ImportSpec) bool {
 	_, currentLayer := include(dependencyOrders, path)
-	dependencies, err := retrieveDependencies(dependencyOrders, path, currentLayer)
+	dependencies, err := retrieveDependencies(dependencyOrders, path, currentLayer, iSpec)
 	if err != nil {
 		*results = append([]CheckResult{newWarning(err.Error())}, *results...)
 		return false
@@ -30,14 +33,6 @@ func retrieveViolations(dependencyOrders []string, currentLayer int, dependencie
 		}
 	}
 	return violations
-}
-
-func retrieveImportPath(line string) string {
-	firstQuoIndex := strings.Index(line, "\"")
-	if firstQuoIndex == -1 {
-		return ""
-	}
-	return line[firstQuoIndex:]
 }
 
 func include(strs []string, s string) (bool, int) {

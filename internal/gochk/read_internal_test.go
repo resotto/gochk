@@ -1,7 +1,8 @@
 package gochk
 
 import (
-	"bufio"
+	"go/parser"
+	"go/token"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -291,7 +292,15 @@ func TestRetrieveDependencies(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			results, _ := retrieveDependencies(tt.dependencies, tt.path, tt.currentLayer)
+			filepath, err := filepath.Abs(tt.path)
+			if err != nil {
+				return
+			}
+			n, err := parser.ParseFile(token.NewFileSet(), filepath, nil, parser.ImportsOnly)
+			if err != nil {
+				return
+			}
+			results, _ := retrieveDependencies(tt.dependencies, tt.path, tt.currentLayer, n.Imports)
 			for i, r := range results {
 				if r.filePath != tt.expected[i].filePath {
 					t.Errorf("got %s, want %s", r.filePath, tt.expected[i].filePath)
@@ -304,159 +313,6 @@ func TestRetrieveDependencies(t *testing.T) {
 				}
 				if r.importLayer != tt.expected[i].importLayer {
 					t.Errorf("got %d, want %d", r.importLayer, tt.expected[i].importLayer)
-				}
-			}
-		})
-	}
-}
-
-func TestReadImports(t *testing.T) {
-	tests := []struct {
-		name     string
-		filepath string
-		expected []string
-	}{
-		{
-			"single import",
-			oneImportPath,
-			[]string{pfmt},
-		},
-		{
-			"multiple import",
-			multipleImportsPath,
-			[]string{pfmt, pstrings},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			filepath, _ := filepath.Abs(tt.filepath)
-			f, err := os.Open(filepath)
-			defer f.Close()
-			if err != nil {
-				t.Errorf("couldn't open file: %s", filepath)
-			}
-			results := readImports(f)
-			for i, importPath := range results {
-				if importPath != tt.expected[i] {
-					t.Errorf("got %s, want %s", importPath, tt.expected[i])
-				}
-			}
-		})
-	}
-}
-
-func TestSkipToImportStatement(t *testing.T) {
-	tests := []struct {
-		name     string
-		filepath string
-		expected bool
-	}{
-		{
-			"with block comments",
-			blockCommentsPath,
-			true,
-		},
-		{
-			"without block comments",
-			singleCommentsPath,
-			true,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			filepath, _ := filepath.Abs(tt.filepath)
-			f, err := os.Open(filepath)
-			defer f.Close()
-			if err != nil {
-				t.Errorf("couldn't open file: %s", filepath)
-				return
-			}
-			scanner := bufio.NewScanner(f)
-			skipToImportStatement(scanner)
-			scanner.Scan()
-			if line := scanner.Text(); len(line) <= 6 || !strings.EqualFold(line[:6], "import") {
-				t.Errorf("didn't skip to import statement: %s", line)
-			}
-		})
-	}
-}
-
-func TestSkipBlockComments(t *testing.T) {
-	tests := []struct {
-		name     string
-		filepath string
-		expected bool
-	}{
-		{
-			"block comments included and scanner.Scan() should return true",
-			blockCommentsPath,
-			true,
-		},
-		{
-			"no block comments and scanner.Scan() should return true",
-			oneImportPath,
-			true,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			filepath, _ := filepath.Abs(tt.filepath)
-			f, err := os.Open(filepath)
-			defer f.Close()
-			if err != nil {
-				t.Errorf("couldn't open file: %s", filepath)
-				return
-			}
-			scanner := bufio.NewScanner(f)
-			scanner.Scan()
-			line := scanner.Text()
-			if skipBlockComments(line, scanner); scanner.Scan() != tt.expected {
-				t.Errorf("got %t, want %t", !tt.expected, tt.expected)
-			}
-		})
-	}
-}
-
-func TestRetrieveMultipleImportPath(t *testing.T) {
-	tests := []struct {
-		name     string
-		filepath string
-		expected []string
-	}{
-		{
-			"multiple import path",
-			multipleImportsPath,
-			[]string{pfmt, pstrings},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			filepath, _ := filepath.Abs(tt.filepath)
-			f, err := os.Open(filepath)
-			defer f.Close()
-			if err != nil {
-				t.Errorf("couldn't open file: %s", filepath)
-				return
-			}
-			scanner := bufio.NewScanner(f)
-			var line string
-			for scanner.Scan() {
-				if line = scanner.Text(); len(line) > 8 && strings.EqualFold(line[:8], "import (") {
-					break
-				}
-			}
-			results := retrieveMultipleImportPath(scanner, line)
-			for i, r := range results {
-				if r != tt.expected[i] {
-					t.Errorf("got %s, want %s", r, tt.expected[i])
 				}
 			}
 		})

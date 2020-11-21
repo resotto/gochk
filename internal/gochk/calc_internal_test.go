@@ -1,6 +1,9 @@
 package gochk
 
 import (
+	"go/parser"
+	"go/token"
+	"path/filepath"
 	"testing"
 )
 
@@ -55,7 +58,15 @@ func TestSetResultType(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			setResultType(&tt.CheckResults, tt.dependencyOrders, tt.path)
+			filepath, err := filepath.Abs(tt.path)
+			if err != nil {
+				return
+			}
+			n, err := parser.ParseFile(token.NewFileSet(), filepath, nil, parser.ImportsOnly)
+			if err != nil {
+				return
+			}
+			setResultType(&tt.CheckResults, tt.dependencyOrders, tt.path, n.Imports)
 			if len(tt.CheckResults) != len(tt.expected) {
 				t.Errorf("got %d, want %d", len(tt.CheckResults), len(tt.expected))
 			}
@@ -103,35 +114,6 @@ func TestRetrieveViolations(t *testing.T) {
 				if r.resultType != tt.expected[i].resultType {
 					t.Errorf("got %s, want %s", r.resultType, tt.expected[i].resultType)
 				}
-			}
-		})
-	}
-}
-
-func TestRetrieveImportPath(t *testing.T) {
-	tests := []struct {
-		name     string
-		line     string
-		expected string
-	}{
-		{
-			"import path exists",
-			"import \"" + pathA + "\"",
-			"\"" + pathA + "\"",
-		},
-		{
-			"import path doesn't exist",
-			"(nothing)",
-			"",
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			result := retrieveImportPath(tt.line)
-			if result != tt.expected {
-				t.Errorf("got %s, want %s", result, tt.expected)
 			}
 		})
 	}
