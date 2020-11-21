@@ -1,4 +1,8 @@
-# V1.1.1 Fix judging file name
+# v1.2.0 Make use of AST
+
+Change to use AST instead of manual parsing.
+
+# v1.1.1 Fix judging file name
 
 Before this release, if you gochk dirs including the file like .gotxt, you would be hung up.
 This release fixes this problem.
