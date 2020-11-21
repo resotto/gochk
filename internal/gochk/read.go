@@ -105,7 +105,7 @@ func Check(targetPath string, cfg Config) ([]CheckResult, bool) {
 			results = append([]CheckResult{newIgnored(path)}, results...)
 			return skipType
 		}
-		if info.IsDir() || !strings.Contains(info.Name(), ".go") {
+		if info.IsDir() || (len(info.Name()) > 3 && info.Name()[len(info.Name())-3:] != ".go") {
 			return nil
 		}
 		violated = setResultType(&results, cfg.DependencyOrders, path) || violated
